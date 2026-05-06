@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Data sources (xlsx files are heavy and reproducible from APRA)
+data/raw/
