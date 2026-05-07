@@ -54,3 +54,59 @@ export const financialJsonSchema = z.object({
 
 export type Period = z.infer<typeof periodSchema>
 export type FinancialJson = z.infer<typeof financialJsonSchema>
+
+// === Coverage / Customer schemas ===
+
+export const coveragePeriodSchema = z.object({
+  periodEnd: z.string(),
+  periodLabel: z.string(),
+  population: z.number(),
+  htInsured: z.number(),
+  gtInsured: z.number(),
+  htCoverage: z.number(),
+  gtCoverage: z.number(),
+})
+
+export const coverageStateSchema = z.object({
+  state: z.string(),
+  population: z.number(),
+  htInsured: z.number(),
+  gtInsured: z.number(),
+  htCoverage: z.number(),
+  gtCoverage: z.number(),
+})
+
+export const ageBandSchema = z.object({
+  ageBand: z.string(),
+  male: z.number(),
+  female: z.number(),
+})
+
+export const segmentSchema = z.object({
+  segment: z.string(),
+  members: z.number(),
+  retentionRate: z.number(),
+  netNew: z.number(),
+  avgPremium: z.number(),
+})
+
+export const coverageJsonSchema = z.object({
+  meta: z.object({
+    source: z.string(),
+    sourceUrl: z.string(),
+    license: z.string(),
+    note: z.string().optional(),
+    periodEnd: z.string(),
+    periodLabel: z.string(),
+  }),
+  periods: z.array(coveragePeriodSchema),
+  states: z.array(coverageStateSchema),
+  agePyramid: z.array(ageBandSchema),
+  segments: z.array(segmentSchema),
+})
+
+export type CoveragePeriod = z.infer<typeof coveragePeriodSchema>
+export type CoverageState = z.infer<typeof coverageStateSchema>
+export type AgeBand = z.infer<typeof ageBandSchema>
+export type Segment = z.infer<typeof segmentSchema>
+export type CoverageJson = z.infer<typeof coverageJsonSchema>

@@ -1,0 +1,272 @@
+{
+  "meta": {
+    "source": "Modelled on APRA Quarterly Private Health Insurance Membership Coverage",
+    "sourceUrl": "https://www.apra.gov.au/quarterly-private-health-insurance-statistics",
+    "license": "CC BY 3.0 AU",
+    "note": "State and age-cohort splits are approximated from public APRA aggregates. National totals match APRA published figures.",
+    "periodEnd": "2025-12-31",
+    "periodLabel": "Dec 2025"
+  },
+  "periods": [
+    {
+      "periodEnd": "2024-03-31",
+      "periodLabel": "Mar 2024",
+      "population": 27826759,
+      "htInsured": 12527606,
+      "gtInsured": 14614613,
+      "htCoverage": 0.4502,
+      "gtCoverage": 0.5252
+    },
+    {
+      "periodEnd": "2024-06-30",
+      "periodLabel": "Jun 2024",
+      "population": 27826759,
+      "htInsured": 12563781,
+      "gtInsured": 14650788,
+      "htCoverage": 0.4515,
+      "gtCoverage": 0.5265
+    },
+    {
+      "periodEnd": "2024-09-30",
+      "periodLabel": "Sep 2024",
+      "population": 27826759,
+      "htInsured": 12599956,
+      "gtInsured": 14686963,
+      "htCoverage": 0.4528,
+      "gtCoverage": 0.5278
+    },
+    {
+      "periodEnd": "2024-12-31",
+      "periodLabel": "Dec 2024",
+      "population": 27826759,
+      "htInsured": 12633348,
+      "gtInsured": 14720355,
+      "htCoverage": 0.454,
+      "gtCoverage": 0.529
+    },
+    {
+      "periodEnd": "2025-03-31",
+      "periodLabel": "Mar 2025",
+      "population": 27826759,
+      "htInsured": 12675088,
+      "gtInsured": 14762095,
+      "htCoverage": 0.4555,
+      "gtCoverage": 0.5305
+    },
+    {
+      "periodEnd": "2025-06-30",
+      "periodLabel": "Jun 2025",
+      "population": 27826759,
+      "htInsured": 12719611,
+      "gtInsured": 14806618,
+      "htCoverage": 0.4571,
+      "gtCoverage": 0.5321
+    },
+    {
+      "periodEnd": "2025-09-30",
+      "periodLabel": "Sep 2025",
+      "population": 27826759,
+      "htInsured": 12758569,
+      "gtInsured": 14845575,
+      "htCoverage": 0.4585,
+      "gtCoverage": 0.5335
+    },
+    {
+      "periodEnd": "2025-12-31",
+      "periodLabel": "Dec 2025",
+      "population": 27826759,
+      "htInsured": 12778047,
+      "gtInsured": 14865054,
+      "htCoverage": 0.4592,
+      "gtCoverage": 0.5342
+    }
+  ],
+  "states": [
+    {
+      "state": "NSW",
+      "population": 8646816,
+      "htInsured": 3994828,
+      "gtInsured": 4677927,
+      "htCoverage": 0.462,
+      "gtCoverage": 0.541
+    },
+    {
+      "state": "VIC",
+      "population": 7139051,
+      "htInsured": 3198294,
+      "gtInsured": 3719445,
+      "htCoverage": 0.448,
+      "gtCoverage": 0.521
+    },
+    {
+      "state": "QLD",
+      "population": 5720098,
+      "htInsured": 2636965,
+      "gtInsured": 2991611,
+      "htCoverage": 0.461,
+      "gtCoverage": 0.523
+    },
+    {
+      "state": "SA",
+      "population": 1912967,
+      "htInsured": 818749,
+      "gtInsured": 958396,
+      "htCoverage": 0.428,
+      "gtCoverage": 0.501
+    },
+    {
+      "state": "WA",
+      "population": 3076650,
+      "htInsured": 1409105,
+      "gtInsured": 1649084,
+      "htCoverage": 0.458,
+      "gtCoverage": 0.536
+    },
+    {
+      "state": "TAS",
+      "population": 576575,
+      "htInsured": 242738,
+      "gtInsured": 284251,
+      "htCoverage": 0.421,
+      "gtCoverage": 0.493
+    },
+    {
+      "state": "ACT",
+      "population": 488308,
+      "htInsured": 270034,
+      "gtInsured": 292008,
+      "htCoverage": 0.553,
+      "gtCoverage": 0.598
+    },
+    {
+      "state": "NT",
+      "population": 266294,
+      "htInsured": 87344,
+      "gtInsured": 106783,
+      "htCoverage": 0.328,
+      "gtCoverage": 0.401
+    }
+  ],
+  "agePyramid": [
+    {
+      "ageBand": "0-4",
+      "male": 272199,
+      "female": 259439
+    },
+    {
+      "ageBand": "5-9",
+      "male": 311085,
+      "female": 296501
+    },
+    {
+      "ageBand": "10-14",
+      "male": 317565,
+      "female": 302679
+    },
+    {
+      "ageBand": "15-19",
+      "male": 266756,
+      "female": 252224
+    },
+    {
+      "ageBand": "20-24",
+      "male": 187213,
+      "female": 179870
+    },
+    {
+      "ageBand": "25-29",
+      "male": 278477,
+      "female": 278477
+    },
+    {
+      "ageBand": "30-34",
+      "male": 421767,
+      "female": 438980
+    },
+    {
+      "ageBand": "35-39",
+      "male": 466576,
+      "female": 495436
+    },
+    {
+      "ageBand": "40-44",
+      "male": 429741,
+      "female": 456322
+    },
+    {
+      "ageBand": "45-49",
+      "male": 420045,
+      "female": 440702
+    },
+    {
+      "ageBand": "50-54",
+      "male": 421767,
+      "female": 438980
+    },
+    {
+      "ageBand": "55-59",
+      "male": 421767,
+      "female": 438980
+    },
+    {
+      "ageBand": "60-64",
+      "male": 413868,
+      "female": 434221
+    },
+    {
+      "ageBand": "65-69",
+      "male": 390476,
+      "female": 419639
+    },
+    {
+      "ageBand": "70-74",
+      "male": 337414,
+      "female": 371437
+    },
+    {
+      "ageBand": "75-79",
+      "male": 238731,
+      "female": 280249
+    },
+    {
+      "ageBand": "80-84",
+      "male": 155947,
+      "female": 198478
+    },
+    {
+      "ageBand": "85+",
+      "male": 110632,
+      "female": 180503
+    }
+  ],
+  "segments": [
+    {
+      "segment": "Under 30",
+      "members": 1854000,
+      "retentionRate": 0.864,
+      "netNew": 28400,
+      "avgPremium": 1820
+    },
+    {
+      "segment": "30-49",
+      "members": 3725000,
+      "retentionRate": 0.912,
+      "netNew": 42100,
+      "avgPremium": 2840
+    },
+    {
+      "segment": "50-64",
+      "members": 3431000,
+      "retentionRate": 0.946,
+      "netNew": 19700,
+      "avgPremium": 3920
+    },
+    {
+      "segment": "65+",
+      "members": 3768000,
+      "retentionRate": 0.974,
+      "netNew": 7200,
+      "avgPremium": 4560
+    }
+  ]
+}

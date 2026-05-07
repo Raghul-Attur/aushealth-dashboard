@@ -14,6 +14,13 @@ import { join } from "path"
 import { cache } from "react"
 import { financialJsonSchema, type FinancialJson, type Period } from "./schemas"
 
+import { coverageJsonSchema, type CoverageJson } from "./schemas"
+
+export const getCoverageData = cache(async (): Promise<CoverageJson> => {
+  const raw = await readFile(join(DATA_DIR, "coverage.json"), "utf-8")
+  return coverageJsonSchema.parse(JSON.parse(raw))
+})
+
 const DATA_DIR = join(process.cwd(), "public/data")
 
 export const getFinancialData = cache(async (): Promise<FinancialJson> => {
