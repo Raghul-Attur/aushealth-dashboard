@@ -3,20 +3,23 @@ import { FilterBar } from "@/components/shell/filter-bar"
 import { TabStrip } from "@/components/shell/tab-strip"
 import { Footer } from "@/components/shell/footer"
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <div className="min-h-screen flex flex-col bg-canvas">
+    <div className="scene flex min-h-screen flex-col">
+      <div className="grain" />
       <AppBar />
-      <FilterBar />
       <TabStrip />
-      <main className="flex-1">
-        <div className="mx-auto max-w-[1440px] px-8 py-6">
+      <FilterBar />
+      <main className="relative z-[2] flex-1">
+        <div className="mx-auto max-w-[1440px] px-10 pt-6 pb-10">
           {children}
         </div>
       </main>
-      <div className="mt-16">
-        <Footer />
-      </div>
+      <Footer />
     </div>
   )
 }

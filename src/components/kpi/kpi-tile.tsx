@@ -1,38 +1,80 @@
 "use client"
 
-import { Info } from "lucide-react"
 import { motion } from "framer-motion"
 import { Delta } from "./delta"
 import { Sparkline } from "./sparkline"
+import { Icon, type IconName } from "@/components/icons/icon-defs"
 import { useCountUp } from "@/hooks/use-count-up"
 import { fmt } from "@/lib/format"
 import { revealVariants, revealTransition } from "@/lib/motion"
+import { cn } from "@/lib/utils"
+
+type Tint = "glass" | "cream" | "deep"
 
 type Props = {
-  /** Stable id for animation tracking */
   id: string
   label: string
-  /** The raw numeric value being animated */
   rawValue: number
-  /** How to format the displayed value */
-  format: "currency" | "percent" | "number"
+  format: "currency" | "percent" | "number" | "pp"
   delta?: { value: number; unit?: "percent" | "pp"; inverse?: boolean }
   sparklineValues?: number[]
   sparklineLabels?: string[]
-  /** Editorial subtext — one-line interpretation under the value */
+  /** One-line interpretation under the value, set in italic Fraunces. */
   subtext?: string
-  /** Inverse semantic for the sparkline trailing dot */
+  /** Optional small footnote pair, e.g. ["vs prior 5.74%", "TTM 5.48%"]. */
+  footnote?: [string, string]
+  /** Inverse semantic for the sparkline trailing dot. */
   inverse?: boolean
+  /** Visual emphasis level: 'deep' for the hero KPI on Overview. */
+  tint?: Tint
+  /**
+   * Legacy emphasis flag. Equivalent to `tint="deep"`. Kept so the existing
+   * pages (Financial / Customer / Operational / story views) inherit the new
+   * hero treatment for their primary tile without code changes.
+   */
   emphasis?: boolean
+  /** Icon shown next to the label (left). Optional. */
+  labelIcon?: IconName
+  /** Icon shown in the top-right corner. Optional. */
+  cornerIcon?: IconName
 }
 
-const formatters = {
-    currency: fmt.currency,
-    percent: fmt.percent,
-    number: fmt.number,
-    // Percentage points — used for net margin, loss ratio etc, displayed as "4.8%"
-    pp: (n: number) => `${n.toFixed(1)}%`,
-  }
+/**
+ * Resolve a sensible labelIcon from the tile id or label if one wasn't given.
+ * Lets existing pages pick up icons without code changes.
+ */
+function resolveLabelIcon(
+  id: string,
+  label: string,
+  override?: IconName
+): IconName | undefined {
+  if (override) return override
+  const key = `${id} ${label}`.toLowerCase()
+  if (key.includes("revenue")) return "coin"
+  if (key.includes("profit")) return "bar-chart"
+  if (key.includes("margin")) return "pct"
+  if (key.includes("loss") || key.includes("claims")) return "stethoscope"
+  if (key.includes("investment")) return "spark"
+  if (key.includes("benefit")) return "coin"
+  if (key.includes("service")) return "activity"
+  if (key.includes("gap") || key.includes("out-of-pocket")) return "alert"
+  if (key.includes("growth") || key.includes("fastest")) return "trend-up"
+  if (key.includes("population") || key.includes("members") || key.includes("insured"))
+    return "users"
+  if (key.includes("coverage")) return "shield-plus"
+  if (key.includes("state")) return "map-pin"
+  return undefined
+}
+
+function resolveCornerIcon(
+  delta: Props["delta"],
+  override?: IconName
+): IconName | undefined {
+  if (override) return override
+  if (!delta) return undefined
+  if (Math.abs(delta.value) < 0.0005) return "arrow-right"
+  return delta.value > 0 ? "trend-up" : "trend-down"
+}
 
 export function KpiTile({
   id,
@@ -43,53 +85,150 @@ export function KpiTile({
   sparklineValues,
   sparklineLabels,
   subtext,
+  footnote,
   inverse = false,
+  tint,
   emphasis = false,
+  labelIcon,
+  cornerIcon,
 }: Props) {
   const animated = useCountUp({ id, to: rawValue, duration: 700 })
+
+  const formatters = {
+    currency: fmt.currency,
+    percent: fmt.percent,
+    number: fmt.number,
+    pp: (n: number) => `${n.toFixed(1)}%`,
+  }
   const displayValue = formatters[format](animated)
+
+  const resolvedLabelIcon = resolveLabelIcon(id, label, labelIcon)
+  const resolvedCornerIcon = resolveCornerIcon(delta, cornerIcon)
+
+  // Legacy `emphasis` boolean maps to the new deep tint when no explicit tint
+  // is given. Explicit `tint` always wins.
+  const effectiveTint: Tint = tint ?? (emphasis ? "deep" : "glass")
+  const isDeep = effectiveTint === "deep"
+  const containerClass =
+    effectiveTint === "deep"
+      ? "glass-deep"
+      : effectiveTint === "cream"
+        ? "glass-cream"
+        : "glass"
+
+  const labelColour = isDeep ? "text-white/65" : "text-text-tertiary"
+  const valueColour = isDeep ? "text-white" : "text-bupa-navy"
+  const subtextColour = isDeep ? "text-white/[0.78]" : "text-text-secondary"
+  const footColour = isDeep ? "text-white/65" : "text-text-tertiary"
+
+  const cornerWrapClass = isDeep
+    ? "bg-white/[0.12] border-white/[0.18] text-white"
+    : tint === "cream"
+      ? "bg-bupa-gold/[0.18] border-bupa-gold/30 text-[#6e4f15]"
+      : "bg-bupa-blue/[0.10] border-bupa-blue/[0.16] text-bupa-blue-deep"
 
   return (
     <motion.div
       variants={revealVariants}
       transition={revealTransition}
-      className={`
-        bg-surface border rounded-xl p-4
-        ${emphasis ? "border-border-default" : "border-border-subtle"}
-        flex flex-col justify-between min-h-[140px]
-        transition-colors duration-fast
-        hover:border-border-default
-      `}
+      className={cn(containerClass, "flex min-h-[200px] flex-col")}
     >
-      <div className="flex items-start justify-between gap-2">
-        <span className="text-caption text-text-secondary">{label}</span>
-        <button
-          type="button"
-          aria-label={`About ${label}`}
-          className="text-text-tertiary hover:text-text-secondary transition-colors"
+      {/* Head row: label + corner icon */}
+      <div className="relative z-[1] mb-3 flex items-start justify-between gap-2">
+        <span
+          className={cn(
+            "inline-flex items-center gap-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.14em]",
+            labelColour
+          )}
         >
-          <Info size={12} strokeWidth={1.75} />
-        </button>
+          {resolvedLabelIcon && (
+            <Icon
+              name={resolvedLabelIcon}
+              size="sm"
+              style={isDeep ? { color: "#fff" } : undefined}
+            />
+          )}
+          {label}
+        </span>
+
+        {resolvedCornerIcon && (
+          <span
+            className={cn(
+              "inline-flex h-8 w-8 items-center justify-center rounded-[10px] border",
+              cornerWrapClass
+            )}
+          >
+            <Icon name={resolvedCornerIcon} />
+          </span>
+        )}
       </div>
 
-      <div className={`tabular ${emphasis ? "text-kpi-hero" : "text-kpi-large"} leading-none mt-2`}>
-        {displayValue}
+      {/* Value */}
+      <div
+        className={cn(
+          "relative z-[1] flex items-baseline gap-1 font-serif font-light tracking-[-0.025em] tabular leading-none",
+          valueColour,
+          isDeep ? "text-[88px]" : "text-[48px]"
+        )}
+        style={{ fontVariationSettings: '"opsz" 144, "SOFT" 50' }}
+      >
+        {/* When values are like "$8.6B" or "4.84%", we display them whole.
+            The animated count shows just the magnitude; the formatter handles unit suffix. */}
+        <span>{displayValue}</span>
+        {/* Subtle status delta indicator after value, only for non-deep tiles */}
       </div>
 
-      {subtext && (
-        <p className="text-caption text-text-tertiary mt-2 leading-snug">{subtext}</p>
+      {/* Delta pill */}
+      {delta && (
+        <div className="relative z-[1] mt-3">
+          <Delta
+            value={delta.value}
+            unit={delta.unit}
+            inverse={delta.inverse ?? inverse}
+            onDark={isDeep}
+          />
+        </div>
       )}
 
-      <div className="flex items-end justify-between gap-3 mt-3">
-        {delta ? (
-          <Delta value={delta.value} unit={delta.unit} inverse={delta.inverse} pill />
-        ) : (
-          <span />
-        )}
-        {sparklineValues && sparklineValues.length >= 2 && (
-          <Sparkline values={sparklineValues} labels={sparklineLabels} inverse={inverse} static/>
-        )}
-      </div>
+      {/* Sparkline */}
+      {sparklineValues && sparklineValues.length >= 2 && (
+        <div className="relative z-[1] mt-4">
+          <Sparkline
+            values={sparklineValues}
+            labels={sparklineLabels}
+            width={isDeep ? 320 : 240}
+            height={isDeep ? 56 : 38}
+            inverse={inverse}
+            onDark={isDeep}
+            static
+          />
+        </div>
+      )}
+
+      {/* Subtext */}
+      {subtext && (
+        <p
+          className={cn(
+            "relative z-[1] mt-3 font-serif text-[13px] font-light italic leading-[1.5]",
+            subtextColour
+          )}
+        >
+          {subtext}
+        </p>
+      )}
+
+      {/* Footnote pair */}
+      {footnote && (
+        <div
+          className={cn(
+            "relative z-[1] mt-auto flex items-end justify-between pt-4 font-sans text-[11px]",
+            footColour
+          )}
+        >
+          <span>{footnote[0]}</span>
+          <span className="font-mono tracking-tight tabular">{footnote[1]}</span>
+        </div>
+      )}
     </motion.div>
   )
 }

@@ -20,7 +20,7 @@ export function generateHeadline(latest: Period, prior: Period | null): Headline
   const priorMargin = prior?.netMargin ?? netMargin
   const marginDelta = netMargin - priorMargin
 
-  // Status thresholds — rough industry conventions
+  // Status thresholds · rough industry conventions
   let status: HealthStatus = "healthy"
   if (netMargin < 0.04 || lossRatio > 0.88) status = "action"
   else if (netMargin < 0.05 || lossRatio > 0.86 || marginDelta < -0.01) status = "watch"

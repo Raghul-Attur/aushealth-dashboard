@@ -13,7 +13,7 @@ type Props = {
 }
 
 /**
- * A "story beat" — a content section that fades in as it enters the viewport.
+ * A "story beat", a content section that fades in as it enters the viewport.
  * Used to give scroll-driven narrative pacing.
  */
 export function Beat({ children, className, delay = 0 }: Props) {

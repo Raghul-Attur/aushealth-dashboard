@@ -43,10 +43,10 @@ export default async function OperationalPage() {
 
   const exploreView = (
     <div className="space-y-4">
-      {/* Row 1 — Headline */}
+      {/* Row 1: Headline */}
       <KpiHero headline={headline} />
 
-      {/* Row 2 — KPI strip */}
+      {/* Row 2: KPI strip */}
       <KpiStrip>
         <KpiTile
           id="op-benefits"
@@ -78,7 +78,7 @@ export default async function OperationalPage() {
           label="Patient gap"
           rawValue={data.gap.gapPct * 100}
           format="pp"
-          subtext={`${fmt.currency(data.gap.patientOutOfPocket)} out-of-pocket — politically watched metric.`}
+          subtext={`${fmt.currency(data.gap.patientOutOfPocket)} out-of-pocket, a politically watched metric.`}
           inverse
         />
         <KpiTile
@@ -86,11 +86,11 @@ export default async function OperationalPage() {
           label="Fastest-growing"
           rawValue={fastestGrowing.yoyChange * 100}
           format="pp"
-          subtext={`${fastestGrowing.specialty} — ${fmt.currency(fastestGrowing.benefitsPaid)} paid this quarter.`}
+          subtext={`${fastestGrowing.specialty}, ${fmt.currency(fastestGrowing.benefitsPaid)} paid this quarter.`}
         />
       </KpiStrip>
 
-      {/* Row 3 — Specialty treemap (HERO) */}
+      {/* Row 3: Specialty treemap (HERO) */}
       <Card>
         <SectionHeader
           title="Benefits paid by specialty"
@@ -116,12 +116,12 @@ export default async function OperationalPage() {
         </p>
       </Card>
 
-      {/* Row 4 — Gap flow + cost dynamics */}
+      {/* Row 4: Gap flow + cost dynamics */}
       <div className="grid grid-cols-12 gap-3">
         <Card className="col-span-12 lg:col-span-6">
           <SectionHeader
             title="Where the medical fee dollar goes"
-            subtitle="Decomposition of total medical fees this quarter — split across insurance, Medicare, and patient out-of-pocket."
+            subtitle="Decomposition of total medical fees this quarter, split across insurance, Medicare, and patient out-of-pocket."
           />
           <div className="mt-5">
             <GapFlow
@@ -132,7 +132,7 @@ export default async function OperationalPage() {
             />
           </div>
           <p className="text-caption text-text-tertiary mt-5">
-            Around {fmt.percent(data.gap.gapPct)} of medical fees are paid by patients out-of-pocket — a politically sensitive metric and a key affordability indicator for the industry.
+            Around {fmt.percent(data.gap.gapPct)} of medical fees are paid by patients out-of-pocket, a politically sensitive metric and a key affordability indicator for the industry.
           </p>
         </Card>
 
@@ -173,12 +173,12 @@ export default async function OperationalPage() {
   })()}
 </div>
           <p className="text-caption text-text-tertiary mt-5">
-            Diagnostic and pathology categories show the highest growth — typically driven by demographic shifts and new test types entering the schedule.
+            Diagnostic and pathology categories show the highest growth, typically driven by demographic shifts and new test types entering the schedule.
           </p>
         </Card>
       </div>
 
-      {/* Row 5 — State × specialty heatmap */}
+      {/* Row 5: State × specialty heatmap */}
       <Card>
         <SectionHeader
           title="Benefits paid by state and specialty"
@@ -189,7 +189,7 @@ export default async function OperationalPage() {
         </div>
       </Card>
 
-      {/* Row 6 — Detail table */}
+      {/* Row 6: Detail table */}
       <Card>
         <SectionHeader
           title="All specialties"
@@ -239,7 +239,7 @@ export default async function OperationalPage() {
       </h1>
       <p className="text-body text-text-secondary leading-relaxed max-w-2xl mb-12">
         A detailed narrative walkthrough of {latest.periodLabel} claims activity is coming soon.
-        In the meantime, the dashboard view remains fully interactive — toggle Story Mode off
+        In the meantime, the dashboard view remains fully interactive. Toggle Story Mode off
         in the app bar to explore the data freely.
       </p>
       <NarrativeBeat

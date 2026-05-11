@@ -75,7 +75,7 @@ function Inner({ width, height, periods }: Props & { width: number; height: numb
           strokeOpacity={0.7}
         />
 
-        {/* Revenue area — sits behind */}
+        {/* Revenue area: sits behind */}
         <AreaClosed
           data={data}
           x={(d) => xScale(d.date)}
@@ -85,7 +85,7 @@ function Inner({ width, height, periods }: Props & { width: number; height: numb
           fillOpacity={0.1}
           curve={curveMonotoneX}
         />
-        {/* Claims area — sits in front, smaller, creates the visible gap */}
+        {/* Claims area: sits in front, smaller, creates the visible gap */}
         <AreaClosed
           data={data}
           x={(d) => xScale(d.date)}

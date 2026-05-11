@@ -1,31 +1,71 @@
-import { ChevronRight } from "lucide-react"
+import { Icon, type IconName } from "@/components/icons/icon-defs"
 import type { WatchItem } from "@/lib/insights"
+import { cn } from "@/lib/utils"
+
+type ToneStyles = {
+  iconWrap: string
+  pill: string
+  icon: IconName
+  label: string
+}
+
+const tone: Record<WatchItem["severity"], ToneStyles> = {
+  action: {
+    iconWrap: "bg-negative-bg text-negative",
+    pill: "bg-negative-bg text-negative",
+    icon: "alert",
+    label: "Action",
+  },
+  watch: {
+    iconWrap: "bg-warning-bg text-warning",
+    pill: "bg-warning-bg text-warning",
+    icon: "trend-down",
+    label: "Watch",
+  },
+}
 
 export function WatchListCard({ item }: { item: WatchItem }) {
-  const accent = item.severity === "action" ? "border-l-negative" : "border-l-warning"
+  const t = tone[item.severity]
 
   return (
     <button
       type="button"
-      className={`
-        w-full text-left bg-surface border border-border-subtle border-l-[3px] ${accent}
-        rounded-r-md px-3 py-2.5 group
-        hover:border-border-default transition-colors
-      `}
+      className={cn(
+        "glass-strong group w-full rounded-[20px] p-5 text-left transition-transform",
+        "grid grid-cols-[36px_1fr_auto] items-start gap-3.5",
+        "hover:-translate-y-[2px]"
+      )}
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <div className="text-body-sm font-medium leading-snug">{item.title}</div>
-          <div className="text-caption text-text-secondary mt-0.5 leading-snug">
-            {item.detail}
-          </div>
+      <span
+        className={cn(
+          "inline-flex h-9 w-9 items-center justify-center rounded-xl",
+          t.iconWrap
+        )}
+        aria-hidden
+      >
+        <Icon name={t.icon} />
+      </span>
+
+      <div className="min-w-0">
+        <span
+          className={cn(
+            "inline-flex items-center rounded-full px-2 py-0.5 font-sans text-[10px] font-semibold uppercase tracking-[0.16em]",
+            t.pill
+          )}
+        >
+          {t.label}
+        </span>
+        <div className="mt-1.5 font-serif text-[18px] font-normal leading-[1.2] tracking-[-0.015em] text-bupa-navy">
+          {item.title}
         </div>
-        <ChevronRight
-          size={14}
-          strokeWidth={1.75}
-          className="text-text-tertiary mt-1 group-hover:text-text-secondary transition-colors flex-shrink-0"
-        />
+        <div className="mt-1 font-serif text-[13px] font-light italic leading-[1.5] text-text-secondary">
+          {item.detail}
+        </div>
       </div>
+
+      <span className="self-center text-text-tertiary group-hover:text-bupa-navy">
+        <Icon name="arrow-right" />
+      </span>
     </button>
   )
 }

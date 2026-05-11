@@ -62,7 +62,7 @@ export function OverviewStory({
               <span className="text-text-primary font-medium tabular">
                 {fmt.currency(latest.netProfit ?? 0)}
               </span>{" "}
-              in after-tax profit — the headline result that will frame
+              in after-tax profit. The headline result that will frame
               boardroom conversations through January.
             </p>
             <p>
@@ -80,7 +80,7 @@ export function OverviewStory({
       {/* === Beat 1: The headline number === */}
       <NarrativeBeat
         eyebrow="The result"
-        claim={`Net margin of ${fmt.percent(latest.netMargin ?? 0)} — within historical range, but slipping.`}
+        claim={`Net margin of ${fmt.percent(latest.netMargin ?? 0)}, within historical range, but slipping.`}
         body={
           <>
             <p>
@@ -90,7 +90,7 @@ export function OverviewStory({
                 {fmt.percent(latest.netMargin ?? 0)}
               </span>{" "}
               to the bottom line. That&apos;s a healthy result in absolute
-              terms — most industries would be content with it — but the
+              terms, and most industries would be content with it. But the
               trajectory matters more than the level.
             </p>
             <p>
@@ -139,8 +139,8 @@ export function OverviewStory({
         body={
           <>
             <p>
-              Premium revenue continues to grow — driven by approved rate
-              increases and modest membership growth — but earnings haven&apos;t
+              Premium revenue continues to grow, driven by approved rate
+              increases and modest membership growth, but earnings haven&apos;t
               kept pace. Insurance revenue rose to{" "}
               <span className="text-text-primary font-medium tabular">
                 {fmt.currency(latest.insuranceRevenue ?? 0)}
@@ -151,7 +151,7 @@ export function OverviewStory({
             <p>
               The gap between the two trends is the signal worth watching.
               When revenue and profit diverge, the question is always{" "}
-              <em>where the friction is</em> — claims, costs, or capital.
+              <em>where the friction is</em>: claims, costs, or capital.
             </p>
           </>
         }
@@ -184,7 +184,7 @@ export function OverviewStory({
         body={
           <>
             <p>
-              The loss ratio — claims divided by revenue — sits at{" "}
+              The loss ratio, claims divided by revenue, sits at{" "}
               <span className="text-text-primary font-medium tabular">
                 {fmt.percent(latest.lossRatio ?? 0)}
               </span>
@@ -196,7 +196,7 @@ export function OverviewStory({
             <p>
               The drivers won&apos;t be visible from the aggregate. Procedure
               mix, deferred-care catch-up, and ageing demographics each
-              contribute — questions answered in the Operational and Customer
+              contribute. Questions answered in the Operational and Customer
               views.
             </p>
           </>
@@ -225,7 +225,7 @@ export function OverviewStory({
       {/* === Beat 4: Investment income === */}
       <NarrativeBeat
         eyebrow="The other line"
-        claim={`Investment income contributed ~${fmt.percent(investmentShare)} of profit — the line that magnifies volatility.`}
+        claim={`Investment income contributed ~${fmt.percent(investmentShare)} of profit, the line that magnifies volatility.`}
         body={
           <>
             <p>
@@ -243,7 +243,7 @@ export function OverviewStory({
             </p>
             <p>
               When investment income runs hot, it papers over underwriting
-              weakness. When it reverses — as it has in past quarters — the
+              weakness. When it reverses, as it has in past quarters, the
               underlying margin picture becomes uncomfortably clear.
             </p>
           </>
@@ -312,7 +312,7 @@ export function OverviewStory({
           </h2>
           <p className="text-body text-text-secondary leading-relaxed max-w-3xl">
             If margin holds at current levels and claims growth moderates,
-            the picture is one of normalisation — a return to long-run averages
+            the picture is one of normalisation, a return to long-run averages
             after a few unusual years. If margins continue to compress and
             claims accelerate, the conversation shifts to pricing, network
             design, and product strategy. Both outcomes are plausible from

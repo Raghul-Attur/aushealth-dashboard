@@ -23,7 +23,7 @@ export function buildRevenueWaterfall(
   const totalChange = end - start
 
   // Approximation: split total change 70/30 between rate and volume
-  // (industry rule of thumb — premium increases drive most revenue growth)
+  // (industry rule of thumb · premium increases drive most revenue growth)
   const rateEffect = Math.round(totalChange * 0.7)
   const volumeEffect = totalChange - rateEffect
   const reinsuranceImpact = (current.netReinsurance ?? 0) - (prior.netReinsurance ?? 0)
@@ -91,7 +91,7 @@ export function buildRevenueWaterfall(
 }
 
 /**
- * Profit composition over time — splits net profit into underwriting profit
+ * Profit composition over time · splits net profit into underwriting profit
  * (insurance service result) vs investment profit (post-tax estimate).
  */
 export type ProfitComposition = {

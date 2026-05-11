@@ -43,7 +43,7 @@ export function BulletChart({ data }: Props) {
         role="img"
         aria-label={`${label}: actual ${fmt.percent(actual)}, target ${fmt.percent(target)}`}
       >
-        {/* Quality bands — three layers (darkest to lightest, drawn back to front) */}
+        {/* Quality bands: three layers (darkest to lightest, drawn back to front) */}
         <div
           className="absolute inset-y-0 left-0"
           style={{ width: `${toPct(range[2])}%`, background: "var(--color-subtle)" }}
@@ -63,7 +63,7 @@ export function BulletChart({ data }: Props) {
           }}
         />
 
-        {/* Actual bar — sits centered vertically */}
+        {/* Actual bar: sits centered vertically */}
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${toPct(actual)}%` }}
@@ -72,7 +72,7 @@ export function BulletChart({ data }: Props) {
           style={{ background: actualColour }}
         />
 
-        {/* Target marker — vertical line at target value */}
+        {/* Target marker: vertical line at target value */}
         <div
           className="absolute top-0 bottom-0 w-[2px]"
           style={{

@@ -1,3 +1,4 @@
+import { Icon } from "@/components/icons/icon-defs"
 import { fmt } from "@/lib/format"
 import { cn } from "@/lib/utils"
 
@@ -6,28 +7,39 @@ type Props = {
   unit?: "percent" | "pp"
   inverse?: boolean
   className?: string
-  /** Pill style applies a coloured background */
+  /** Pill style applies a coloured background. Default true on the new design. */
   pill?: boolean
+  /** Use white-on-dark variants for placement on glass-deep cards. */
+  onDark?: boolean
 }
 
-export function Delta({ value, unit = "percent", inverse = false, className, pill = false }: Props) {
+export function Delta({
+  value,
+  unit = "percent",
+  inverse = false,
+  className,
+  pill = true,
+  onDark = false,
+}: Props) {
   const isPositive = value > 0
   const isGood = inverse ? !isPositive : isPositive
   const isFlat = Math.abs(value) < 0.0005
 
-  const colour = isFlat
-    ? "text-text-tertiary"
+  const lightClasses = isFlat
+    ? "bg-subtle text-text-tertiary"
     : isGood
-    ? "text-positive"
-    : "text-negative"
+      ? "bg-positive-bg text-positive"
+      : "bg-negative-bg text-negative"
 
-  const bgColour = isFlat
-    ? "bg-subtle"
+  const darkClasses = isFlat
+    ? "bg-white/10 text-white/65"
     : isGood
-    ? "bg-positive-bg"
-    : "bg-negative-bg"
+      ? "bg-[rgba(94,210,142,0.18)] text-[#7be3a8]"
+      : "bg-[rgba(255,140,128,0.18)] text-[#ff9a8c]"
 
-  const arrow = isFlat ? "—" : value > 0 ? "▲" : "▼"
+  const colourClasses = onDark ? darkClasses : lightClasses
+
+  const arrowName = isFlat ? "arrow-right" : value > 0 ? "arrow-up" : "arrow-down"
   const formatted =
     unit === "pp" ? fmt.pp(Math.abs(value)) : fmt.percent(Math.abs(value))
 
@@ -35,21 +47,34 @@ export function Delta({ value, unit = "percent", inverse = false, className, pil
     return (
       <span
         className={cn(
-          "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-caption tabular font-medium",
-          colour,
-          bgColour,
+          "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 pl-2 font-sans text-caption font-semibold tabular",
+          colourClasses,
           className
         )}
       >
-        <span aria-hidden className="text-[9px] leading-none">{arrow}</span>
+        <Icon name={arrowName} size="sm" />
         <span>{formatted}</span>
       </span>
     )
   }
 
+  const textColour = isFlat
+    ? onDark
+      ? "text-white/65"
+      : "text-text-tertiary"
+    : isGood
+      ? "text-positive"
+      : "text-negative"
+
   return (
-    <span className={cn("text-delta tabular inline-flex items-center gap-1", colour, className)}>
-      <span aria-hidden>{arrow}</span>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 font-sans text-delta tabular font-medium",
+        textColour,
+        className
+      )}
+    >
+      <Icon name={arrowName} size="sm" />
       <span>{formatted}</span>
     </span>
   )

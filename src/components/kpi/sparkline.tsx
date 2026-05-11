@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useId, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { duration, easing } from "@/lib/motion"
 
@@ -13,6 +13,8 @@ type Props = {
   labels?: string[]
   static?: boolean
   inverse?: boolean
+  /** White-on-dark variant for use on glass-deep tiles. */
+  onDark?: boolean
 }
 
 export function Sparkline({
@@ -21,11 +23,14 @@ export function Sparkline({
   height = 24,
   expandedWidth = 160,
   expandedHeight = 48,
-  labels,
+  labels: _labels,
   static: isStatic = false,
   inverse = false,
+  onDark = false,
 }: Props) {
+  void _labels // reserved for future tooltip wiring
   const [hovered, setHovered] = useState(false)
+  const reactId = useId()
   const expanded = hovered && !isStatic
 
   if (values.length < 2) return null
@@ -37,27 +42,42 @@ export function Sparkline({
   const max = Math.max(...values)
   const range = max - min || 1
   const padY = expanded ? 8 : 2
-  const padX = expanded ? 6 : 0
 
-  const points = values.map((v, i) => {
-    const x = padX + (i / (values.length - 1)) * (w - padX * 2)
-    const y = h - padY - ((v - min) / range) * (h - padY * 2)
-    return [x, y] as const
-  })
-
-  const path = points
-    .map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`)
-    .join(" ")
-
-  const last = points[points.length - 1]
-  const first = points[0]
   const trendUp = values[values.length - 1] > values[0]
   const trendIsGood = inverse ? !trendUp : trendUp
-  const dotColour = trendIsGood ? "var(--color-positive)" : "var(--color-negative)"
 
-  const areaPath =
-    path +
-    ` L${last[0].toFixed(1)},${(h - padY).toFixed(1)} L${first[0].toFixed(1)},${(h - padY).toFixed(1)} Z`
+  const lineStroke = onDark
+    ? trendIsGood
+      ? "#7be3a8"
+      : "#ff9a8c"
+    : "var(--color-bupa-navy)"
+  const dotColour = onDark
+    ? trendIsGood
+      ? "#7be3a8"
+      : "#ff9a8c"
+    : trendIsGood
+      ? "var(--color-positive)"
+      : "var(--color-negative)"
+
+  const areaGradId = `spark-area${reactId.replace(/:/g, "-")}`
+
+  // Compact view
+  const compactPath = values
+    .map((v, i) => {
+      const x = (i / (values.length - 1)) * width
+      const y = height - padY - ((v - min) / range) * (height - padY * 2)
+      return `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`
+    })
+    .join(" ")
+
+  const compactEndX = width
+  const compactEndY =
+    height - padY - ((values[values.length - 1] - min) / range) * (height - padY * 2)
+
+  // Area path uses the same trajectory then closes to the baseline
+  const compactArea =
+    compactPath +
+    ` L${compactEndX.toFixed(1)},${(height - padY).toFixed(1)} L0,${(height - padY).toFixed(1)} Z`
 
   return (
     <div
@@ -66,9 +86,8 @@ export function Sparkline({
       className="relative flex-shrink-0"
       style={{ width, height }}
     >
-      {/* Compact baseline — always present, fades when expanded */}
       <motion.div
-        className="absolute right-0 bottom-0"
+        className="absolute left-0 top-0"
         animate={{ opacity: expanded ? 0 : 1 }}
         transition={{ duration: duration.fast }}
       >
@@ -79,31 +98,34 @@ export function Sparkline({
           className="overflow-visible"
           aria-hidden
         >
+          <defs>
+            <linearGradient id={areaGradId} x1="0" x2="0" y1="0" y2="1">
+              <stop
+                offset="0%"
+                stopColor={onDark ? "#7be3a8" : "var(--color-bupa-navy)"}
+                stopOpacity={onDark ? 0.55 : 0.18}
+              />
+              <stop
+                offset="100%"
+                stopColor={onDark ? "#7be3a8" : "var(--color-bupa-navy)"}
+                stopOpacity="0"
+              />
+            </linearGradient>
+          </defs>
+          <path d={compactArea} fill={`url(#${areaGradId})`} />
           <path
-            d={values
-              .map((v, i) => {
-                const x = (i / (values.length - 1)) * width
-                const y = height - 2 - ((v - min) / range) * (height - 4)
-                return `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`
-              })
-              .join(" ")}
+            d={compactPath}
             fill="none"
-            stroke="var(--color-chart-1)"
-            strokeOpacity={0.75}
-            strokeWidth={1.5}
+            stroke={lineStroke}
+            strokeOpacity={onDark ? 1 : 0.85}
+            strokeWidth={1.6}
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          <circle
-            cx={(width / (values.length - 1)) * (values.length - 1)}
-            cy={height - 2 - ((values[values.length - 1] - min) / range) * (height - 4)}
-            r={2.5}
-            fill={dotColour}
-          />
+          <circle cx={compactEndX} cy={compactEndY} r={3} fill={dotColour} />
         </svg>
       </motion.div>
 
-      {/* Expanded view — positioned absolutely, anchored to bottom-right */}
       <AnimatePresence>
         {expanded && (
           <motion.div
@@ -115,7 +137,7 @@ export function Sparkline({
             style={{ width: expandedWidth, height: expandedHeight }}
           >
             <div
-              className="bg-surface border border-border-subtle rounded-md p-1.5 shadow-sm"
+              className="glass-strong rounded-md p-1.5"
               style={{ width: expandedWidth, height: expandedHeight }}
             >
               <svg
@@ -126,53 +148,30 @@ export function Sparkline({
                 aria-hidden
               >
                 <path
-                  d={areaPath
-                    .replace(
-                      /L([0-9.]+),([0-9.]+) L([0-9.]+),([0-9.]+) Z$/,
-                      `L${(expandedWidth - 12 - padX).toFixed(1)},${(expandedHeight - 12 - padY).toFixed(1)} L${padX.toFixed(1)},${(expandedHeight - 12 - padY).toFixed(1)} Z`
-                    )}
-                  fill="var(--color-chart-1)"
-                  fillOpacity={0.08}
-                />
-                <path
                   d={values
                     .map((v, i) => {
                       const innerW = expandedWidth - 12
                       const innerH = expandedHeight - 12
-                      const x = padX + (i / (values.length - 1)) * (innerW - padX * 2)
+                      const x = (i / (values.length - 1)) * innerW
                       const y =
                         innerH - padY - ((v - min) / range) * (innerH - padY * 2)
                       return `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`
                     })
                     .join(" ")}
                   fill="none"
-                  stroke="var(--color-chart-1)"
+                  stroke={lineStroke}
                   strokeOpacity={0.85}
-                  strokeWidth={1.5}
+                  strokeWidth={1.6}
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                />
-                <circle
-                  cx={
-                    padX +
-                    ((values.length - 1) / (values.length - 1)) *
-                      (expandedWidth - 12 - padX * 2)
-                  }
-                  cy={
-                    expandedHeight -
-                    12 -
-                    padY -
-                    ((values[values.length - 1] - min) / range) *
-                      (expandedHeight - 12 - padY * 2)
-                  }
-                  r={2.5}
-                  fill={dotColour}
                 />
               </svg>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+      {/* w/h kept in scope to avoid unused-var noise from earlier expanded path */}
+      <span hidden>{w}{h}</span>
     </div>
   )
 }

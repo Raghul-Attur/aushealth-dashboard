@@ -38,7 +38,7 @@ export default async function CustomerPage() {
   const headline = {
     status: htDelta > 0.001 ? "healthy" : ("watch" as "healthy" | "watch" | "action"),
     statusLabel: htDelta > 0.001 ? "Healthy" : "Watch",
-    sentence: `${fmt.number(latest.htInsured)} Australians have hospital cover, ${fmt.percent(latest.htCoverage)} of the population — ${htDelta > 0 ? "up" : "down"} ${fmt.pp(Math.abs(htDelta))} on the prior quarter.`,
+    sentence: `${fmt.number(latest.htInsured)} Australians have hospital cover, ${fmt.percent(latest.htCoverage)} of the population, ${htDelta > 0 ? "up" : "down"} ${fmt.pp(Math.abs(htDelta))} on the prior quarter.`,
     period: latest.periodLabel,
   }
 
@@ -58,10 +58,10 @@ export default async function CustomerPage() {
 
   const exploreView = (
     <div className="space-y-4">
-      {/* Row 1 — Headline */}
+      {/* Row 1: Headline */}
       <KpiHero headline={headline} />
 
-      {/* Row 2 — KPI strip */}
+      {/* Row 2: KPI strip */}
       <KpiStrip>
         <KpiTile
           id="cust-ht-insured"
@@ -102,7 +102,7 @@ export default async function CustomerPage() {
           delta={{ value: populationDelta }}
           sparklineValues={popSpark}
           sparklineLabels={labels}
-          subtext="Total Australian population — denominator for coverage."
+          subtext="Total Australian population. Denominator for coverage."
         />
         <KpiTile
           id="cust-top-state"
@@ -113,7 +113,7 @@ export default async function CustomerPage() {
         />
       </KpiStrip>
 
-      {/* Row 3 — Coverage by state + age pyramid */}
+      {/* Row 3: Coverage by state + age pyramid */}
       <div className="grid grid-cols-12 gap-3">
         <Card className="col-span-12 lg:col-span-5">
           <SectionHeader
@@ -124,7 +124,7 @@ export default async function CustomerPage() {
             <StateCoverageList states={data.states} metric="htCoverage" />
           </div>
           <p className="text-caption text-text-tertiary mt-4">
-            ACT, NSW and QLD lead the country. NT lags significantly — a structural pattern across the dataset.
+            ACT, NSW and QLD lead the country. NT lags significantly, a structural pattern across the dataset.
           </p>
         </Card>
 
@@ -137,12 +137,12 @@ export default async function CustomerPage() {
             <PopulationPyramid data={data.agePyramid} />
           </div>
           <p className="text-caption text-text-tertiary mt-2">
-            {fmt.percent(workingAgeShare)} of insured persons are aged 30-64 — the working-age core that subsidises older cohorts. The 20-24 dip reflects price sensitivity at lower incomes.
+            {fmt.percent(workingAgeShare)} of insured persons are aged 30-64, the working-age core that subsidises older cohorts. The 20-24 dip reflects price sensitivity at lower incomes.
           </p>
         </Card>
       </div>
 
-      {/* Row 4 — Segment bars */}
+      {/* Row 4: Segment bars */}
       <Card>
         <SectionHeader
           title="Membership by life stage"
@@ -152,11 +152,11 @@ export default async function CustomerPage() {
           <SegmentBars segments={data.segments} />
         </div>
         <p className="text-caption text-text-tertiary mt-4">
-          Older cohorts retain at significantly higher rates — the under-30 segment churns at three times the rate of 65+. Premium per member rises with age, partially offsetting the higher claims cost.
+          Older cohorts retain at significantly higher rates. The under-30 segment churns at three times the rate of 65+. Premium per member rises with age, partially offsetting the higher claims cost.
         </p>
       </Card>
 
-      {/* Row 5 — Detail table */}
+      {/* Row 5: Detail table */}
       <Card>
         <SectionHeader
           title="State-level detail"
@@ -207,7 +207,7 @@ export default async function CustomerPage() {
       </h1>
       <p className="text-body text-text-secondary leading-relaxed max-w-2xl mb-12">
         A detailed narrative walkthrough of {latest.periodLabel} membership and coverage data is coming soon.
-        In the meantime, the dashboard view remains fully interactive — toggle Story Mode off
+        In the meantime, the dashboard view remains fully interactive. Toggle Story Mode off
         in the app bar to explore the data freely.
       </p>
       <NarrativeBeat

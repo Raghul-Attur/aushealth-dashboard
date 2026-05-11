@@ -75,10 +75,10 @@ export default async function FinancialPage() {
 
   const exploreView = (
     <div className="space-y-4">
-      {/* Row 1 — Headline */}
+      {/* Row 1: Headline */}
       <KpiHero headline={headline} />
 
-      {/* Row 2 — KPI strip */}
+      {/* Row 2: KPI strip */}
       <KpiStrip>
         <KpiTile
           id="fin-revenue"
@@ -102,7 +102,7 @@ export default async function FinancialPage() {
           subtext={
             profitDelta > 0
               ? "Year-on-year profit recovering from prior period."
-              : "Year-on-year profit compressed — review composition below."
+              : "Year-on-year profit compressed. Review composition below."
           }
         />
         <KpiTile
@@ -134,11 +134,11 @@ export default async function FinancialPage() {
           delta={{ value: investmentDelta }}
           sparklineValues={investmentSpark}
           sparklineLabels={labels}
-          subtext="Quarterly net investment income — historically volatile."
+          subtext="Quarterly net investment income, historically volatile."
         />
       </KpiStrip>
 
-      {/* Row 3 — Bullet chart strip */}
+      {/* Row 3: Bullet chart strip */}
       <Card>
         <SectionHeader
           title="Performance against target"
@@ -151,7 +151,7 @@ export default async function FinancialPage() {
         </div>
       </Card>
 
-      {/* Row 4 — Hero chart (waterfall) + watch list */}
+      {/* Row 4: Hero chart (waterfall) + watch list */}
       <div className="grid grid-cols-12 gap-3">
         <Card className="col-span-12 lg:col-span-8">
           <SectionHeader
@@ -180,7 +180,7 @@ export default async function FinancialPage() {
         </div>
       </div>
 
-      {/* Row 5 — Detail table */}
+      {/* Row 5: Detail table */}
       <Card>
         <SectionHeader title="Quarterly financials" subtitle="Industry aggregate, last eight quarters." />
         <div className="mt-4 overflow-x-auto">
@@ -233,7 +233,7 @@ export default async function FinancialPage() {
       </h1>
       <p className="text-body text-text-secondary leading-relaxed max-w-2xl mb-12">
         A detailed narrative walkthrough of {latest.periodLabel} financial performance is coming soon.
-        In the meantime, the dashboard view remains fully interactive — toggle Story Mode off
+        In the meantime, the dashboard view remains fully interactive. Toggle Story Mode off
         in the app bar to explore the data freely.
       </p>
       <NarrativeBeat

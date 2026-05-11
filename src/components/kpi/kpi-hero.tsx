@@ -1,116 +1,79 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { useRef, useState } from "react"
 import type { Headline } from "@/lib/insights"
+import { Icon } from "@/components/icons/icon-defs"
 import { duration, easing } from "@/lib/motion"
 
-const statusColour: Record<Headline["status"], string> = {
-  healthy: "bg-positive",
-  watch: "bg-warning",
-  action: "bg-negative",
-}
-
-/**
- * Splits the generated sentence into phrases for staggered reveal.
- * Splits on commas, "with", "but" — naturalistic cut points.
- */
-function splitIntoPhrases(sentence: string): string[] {
-  const parts = sentence.split(/(,\s*(?:with|but|driven by|despite|on)?\s*)/i)
-  // Recombine separators with the following phrase
-  const result: string[] = []
-  let current = ""
-  for (const part of parts) {
-    if (part.match(/^,\s*/)) {
-      if (current) result.push(current)
-      current = part
-    } else {
-      current += part
-    }
-  }
-  if (current) result.push(current)
-  return result.filter((p) => p.trim().length > 0)
+const statusTone: Record<
+  Headline["status"],
+  { dot: string; text: string; label: string }
+> = {
+  healthy: {
+    dot: "bg-positive",
+    text: "text-positive",
+    label: "Healthy",
+  },
+  watch: {
+    dot: "bg-warning",
+    text: "text-warning",
+    label: "Watch",
+  },
+  action: {
+    dot: "bg-negative",
+    text: "text-negative",
+    label: "Action",
+  },
 }
 
 export function KpiHero({ headline }: { headline: Headline }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [glow, setGlow] = useState({ x: 50, y: 50, opacity: 0 })
-
-  const phrases = splitIntoPhrases(headline.sentence)
-
-  function handleMouseMove(e: React.MouseEvent) {
-    if (!ref.current) return
-    const rect = ref.current.getBoundingClientRect()
-    setGlow({
-      x: ((e.clientX - rect.left) / rect.width) * 100,
-      y: ((e.clientY - rect.top) / rect.height) * 100,
-      opacity: 1,
-    })
-  }
+  const tone = statusTone[headline.status]
 
   return (
     <motion.div
-      ref={ref}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: duration.reveal, ease: easing.product }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={() => setGlow((g) => ({ ...g, opacity: 0 }))}
-      className="relative card-glass overflow-hidden"
+      className="glass"
     >
-      {/* Ambient hover glow */}
-      <motion.div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        animate={{ opacity: glow.opacity }}
-        transition={{ duration: duration.slow, ease: easing.product }}
-        style={{
-          background: `radial-gradient(circle 400px at ${glow.x}% ${glow.y}%, var(--color-chart-1) 0%, transparent 70%)`,
-          mixBlendMode: "soft-light",
-        }}
-      />
-
-      <div className="relative flex items-start justify-between gap-6">
-        <div className="min-w-0 flex-1">
-          <div className="text-caption text-text-secondary mb-2 flex items-center gap-2 flex-wrap">
-            <span>{headline.period} results</span>
-            <span className="text-text-tertiary">·</span>
-            <span>Industry aggregate</span>
-            <span className="text-text-tertiary">·</span>
-            <span>APRA quarterly data</span>
+      <div className="grid items-end gap-8 lg:grid-cols-[1fr_auto]">
+        <div className="min-w-0">
+          <div className="inline-flex items-center gap-2.5 font-sans text-[11px] font-semibold uppercase tracking-[0.22em] text-bupa-blue-deep">
+            <Icon name="calendar" size="sm" className="text-bupa-blue" />
+            {headline.period} · Industry aggregate · APRA
           </div>
-          <p className="text-display leading-tight max-w-[680px]">
-            {phrases.map((phrase, i) => (
-              <motion.span
-                key={i}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: duration.slow,
-                  ease: easing.product,
-                  delay: 0.3 + i * 0.18,
-                }}
-                style={{ display: "inline" }}
-              >
-                {phrase}
-              </motion.span>
-            ))}
+
+          <p
+            className="mt-4 max-w-[900px] font-serif text-[34px] font-light leading-[1.18] tracking-[-0.022em] text-bupa-navy"
+            style={{ fontVariationSettings: '"opsz" 144, "SOFT" 30' }}
+          >
+            {headline.sentence}
           </p>
         </div>
 
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="relative flex h-2.5 w-2.5">
-            <motion.span
-              aria-hidden
-              className={`absolute inline-flex h-full w-full rounded-full ${statusColour[headline.status]}`}
-              animate={{ opacity: [0.4, 0, 0.4], scale: [1, 1.8, 1] }}
-              transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <span
-              className={`relative inline-flex rounded-full h-2.5 w-2.5 ${statusColour[headline.status]}`}
-            />
+        <div className="flex flex-col items-end gap-3 lg:items-end">
+          <span
+            className={`inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1.5 font-sans text-caption font-medium ${tone.text}`}
+          >
+            <span className="relative flex h-2 w-2">
+              <motion.span
+                aria-hidden
+                className={`absolute inline-flex h-full w-full rounded-full ${tone.dot}`}
+                animate={{ opacity: [0.4, 0, 0.4], scale: [1, 1.8, 1] }}
+                transition={{
+                  duration: 2.4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+              <span
+                className={`relative inline-flex h-2 w-2 rounded-full ${tone.dot}`}
+              />
+            </span>
+            {tone.label}
           </span>
-          <span className="text-body-sm text-text-secondary">{headline.statusLabel}</span>
+
+          <span className="live-dot">Live · APRA refresh</span>
         </div>
       </div>
     </motion.div>

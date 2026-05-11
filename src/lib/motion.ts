@@ -1,13 +1,13 @@
 /**
  * Motion tokens. Every animation in the dashboard references these.
- * Values tuned for "premium product" feel — short durations,
+ * Values tuned for "premium product" feel · short durations,
  * physics-based easing, restrained.
  */
 
 export const easing = {
-    /** Default easing — material-y, used for most state changes */
+    /** Default easing · material-y, used for most state changes */
     default: [0.4, 0, 0.2, 1] as const,
-    /** "Product" easing — softer entrance, used by Linear/Vercel */
+    /** "Product" easing · softer entrance, used by Linear/Vercel */
     product: [0.32, 0.72, 0, 1] as const,
     /** Spring-y bounce for celebratory moments. Use sparingly. */
     bounce: [0.68, -0.55, 0.265, 1.55] as const,
@@ -31,7 +31,7 @@ export const easing = {
   } as const
   
   /**
-   * Standard reveal — used for cards, sections, and tiles entering the page.
+   * Standard reveal · used for cards, sections, and tiles entering the page.
    * Subtle: fade + small Y translate + 200ms duration.
    */
   export const revealVariants = {

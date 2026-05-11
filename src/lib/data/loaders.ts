@@ -4,7 +4,7 @@
  * Reads parsed APRA JSON from public/data/ and validates it against
  * the Zod schemas. Cached per request via React's `cache()`.
  *
- * This is server-only — never imported from a client component.
+ * This is server-only · never imported from a client component.
  */
 
 import "server-only"
