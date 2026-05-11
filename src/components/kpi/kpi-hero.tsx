@@ -79,7 +79,7 @@ export function KpiHero({ headline }: { headline: Headline }) {
             <span className="text-text-tertiary">·</span>
             <span>APRA quarterly data</span>
           </div>
-          <p className="text-display leading-tight max-w-3xl">
+          <p className="text-display leading-tight max-w-[680px]">
             {phrases.map((phrase, i) => (
               <motion.span
                 key={i}

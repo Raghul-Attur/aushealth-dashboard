@@ -16,6 +16,13 @@ import { financialJsonSchema, type FinancialJson, type Period } from "./schemas"
 
 import { coverageJsonSchema, type CoverageJson } from "./schemas"
 
+import { operationalJsonSchema, type OperationalJson } from "./schemas"
+
+export const getOperationalData = cache(async (): Promise<OperationalJson> => {
+  const raw = await readFile(join(DATA_DIR, "operational.json"), "utf-8")
+  return operationalJsonSchema.parse(JSON.parse(raw))
+})
+
 export const getCoverageData = cache(async (): Promise<CoverageJson> => {
   const raw = await readFile(join(DATA_DIR, "coverage.json"), "utf-8")
   return coverageJsonSchema.parse(JSON.parse(raw))

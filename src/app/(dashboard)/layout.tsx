@@ -14,7 +14,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {children}
         </div>
       </main>
-      <Footer />
+      <div className="mt-16">
+        <Footer />
+      </div>
     </div>
   )
 }

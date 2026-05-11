@@ -110,3 +110,50 @@ export type CoverageState = z.infer<typeof coverageStateSchema>
 export type AgeBand = z.infer<typeof ageBandSchema>
 export type Segment = z.infer<typeof segmentSchema>
 export type CoverageJson = z.infer<typeof coverageJsonSchema>
+
+// === Operational schemas ===
+
+export const operationalPeriodSchema = z.object({
+  periodEnd: z.string(),
+  periodLabel: z.string(),
+  totalBenefits: z.number(),
+})
+
+export const specialtySchema = z.object({
+  specialty: z.string(),
+  benefitsPaid: z.number(),
+  priorYearBenefits: z.number(),
+  yoyChange: z.number(),
+})
+
+export const heatmapRowSchema = z.object({
+  state: z.string(),
+  specialties: z.record(z.string(), z.number()),
+})
+
+export const operationalJsonSchema = z.object({
+  meta: z.object({
+    source: z.string(),
+    sourceUrl: z.string(),
+    license: z.string(),
+    periodEnd: z.string(),
+    periodLabel: z.string(),
+  }),
+  periods: z.array(operationalPeriodSchema),
+  specialties: z.array(specialtySchema),
+  heatmap: z.array(heatmapRowSchema),
+  topSpecialtiesForHeatmap: z.array(z.string()),
+  gap: z.object({
+    totalFees: z.number(),
+    fundBenefits: z.number(),
+    medicareBenefits: z.number(),
+    patientOutOfPocket: z.number(),
+    gapPct: z.number(),
+    totalServices: z.number(),
+    avgBenefitPerService: z.number(),
+  }),
+})
+
+export type Specialty = z.infer<typeof specialtySchema>
+export type HeatmapRow = z.infer<typeof heatmapRowSchema>
+export type OperationalJson = z.infer<typeof operationalJsonSchema>

@@ -12,11 +12,12 @@ type Props = {
 export function BulletChart({ data }: Props) {
   const { label, actual, target, range, inverse } = data
 
-  // Scale: domain runs from 0 to slightly above the highest of (actual, target, range[2])
-  const maxValue = Math.max(actual, target, range[2]) * 1.15
-  const toPct = (v: number) => (v / maxValue) * 100
+  // Domain: 0 to slightly above range[2] OR actual, whichever is larger.
+  // This ensures both actual and target are always visible.
+  const domainMax = Math.max(range[2], actual, target) * 1.05
+  const toPct = (v: number) => Math.min(100, (v / domainMax) * 100)
 
-  // Determine status: how does actual compare to target?
+  // Status determination
   const onTarget = inverse ? actual <= target : actual >= target
   const inMidBand = inverse
     ? actual <= range[1] && actual > range[0]
@@ -29,7 +30,7 @@ export function BulletChart({ data }: Props) {
     : "var(--color-negative)"
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-2">
         <span className="text-caption text-text-secondary">{label}</span>
         <span className="text-caption tabular text-text-primary font-medium">
@@ -42,10 +43,10 @@ export function BulletChart({ data }: Props) {
         role="img"
         aria-label={`${label}: actual ${fmt.percent(actual)}, target ${fmt.percent(target)}`}
       >
-        {/* Quality bands — three layers, low to high */}
+        {/* Quality bands — three layers (darkest to lightest, drawn back to front) */}
         <div
-          className="absolute inset-y-0 left-0 bg-subtle"
-          style={{ width: `${toPct(range[2])}%` }}
+          className="absolute inset-y-0 left-0"
+          style={{ width: `${toPct(range[2])}%`, background: "var(--color-subtle)" }}
         />
         <div
           className="absolute inset-y-0 left-0"
@@ -62,7 +63,7 @@ export function BulletChart({ data }: Props) {
           }}
         />
 
-        {/* Actual bar */}
+        {/* Actual bar — sits centered vertically */}
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${toPct(actual)}%` }}
@@ -71,7 +72,7 @@ export function BulletChart({ data }: Props) {
           style={{ background: actualColour }}
         />
 
-        {/* Target marker */}
+        {/* Target marker — vertical line at target value */}
         <div
           className="absolute top-0 bottom-0 w-[2px]"
           style={{
@@ -82,8 +83,8 @@ export function BulletChart({ data }: Props) {
       </div>
 
       <div className="flex items-center justify-between text-micro text-text-tertiary tabular">
-        <span>0</span>
         <span>Target {fmt.percent(target)}</span>
+        <span>{fmt.percent(domainMax)}</span>
       </div>
     </div>
   )

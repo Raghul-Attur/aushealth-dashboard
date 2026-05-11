@@ -3,10 +3,11 @@ import { KpiTile } from "@/components/kpi/kpi-tile"
 import { KpiStrip } from "@/components/kpi/kpi-strip"
 import { Card } from "@/components/layout/card"
 import { SectionHeader } from "@/components/layout/section-header"
-import { WatchListCard } from "@/components/layout/watch-list-card"
 import { BulletChart } from "@/components/charts/bullet-chart"
 import { WaterfallChart } from "@/components/charts/waterfall"
 import { ProfitCompositionChart } from "@/components/charts/profit-composition"
+import { StoryFrame } from "@/components/story/story-frame"
+import { NarrativeBeat } from "@/components/story/beat"
 import {
   getFinancialData,
   getRecentPeriods,
@@ -16,7 +17,6 @@ import {
   buildProfitComposition,
   buildRevenueWaterfall,
 } from "@/lib/data/transforms"
-import { generateHeadline } from "@/lib/insights"
 import { fmt } from "@/lib/format"
 import type { Period } from "@/lib/data/schemas"
 
@@ -73,7 +73,7 @@ export default async function FinancialPage() {
     ((latest.investmentResult ?? 0) - (prior?.investmentResult ?? 0)) /
     (prior?.investmentResult || 1)
 
-  return (
+  const exploreView = (
     <div className="space-y-4">
       {/* Row 1 — Headline */}
       <KpiHero headline={headline} />
@@ -222,4 +222,34 @@ export default async function FinancialPage() {
       </Card>
     </div>
   )
+
+  const storyView = (
+    <div className="py-8">
+      <div className="text-caption uppercase tracking-wider text-text-tertiary mb-3">
+        Story · Financial performance
+      </div>
+      <h1 className="text-display leading-tight mb-6 max-w-3xl">
+        How the financial engine is running.
+      </h1>
+      <p className="text-body text-text-secondary leading-relaxed max-w-2xl mb-12">
+        A detailed narrative walkthrough of {latest.periodLabel} financial performance is coming soon.
+        In the meantime, the dashboard view remains fully interactive — toggle Story Mode off
+        in the app bar to explore the data freely.
+      </p>
+      <NarrativeBeat
+        eyebrow="Headline result"
+        claim={headline.sentence}
+        body={
+          <p>
+            The detailed numbers behind this result are explored in the standard dashboard view.
+            Toggle Story Mode off in the app bar to return to the full layout.
+          </p>
+        }
+        visual={<KpiHero headline={headline} />}
+        fullWidth
+      />
+    </div>
+  )
+
+  return <StoryFrame story={storyView} explore={exploreView} />
 }

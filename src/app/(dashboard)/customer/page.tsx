@@ -6,6 +6,8 @@ import { SectionHeader } from "@/components/layout/section-header"
 import { PopulationPyramid } from "@/components/charts/population-pyramid"
 import { StateCoverageList } from "@/components/charts/state-coverage-list"
 import { SegmentBars } from "@/components/charts/segment-bars"
+import { StoryFrame } from "@/components/story/story-frame"
+import { NarrativeBeat } from "@/components/story/beat"
 import { getCoverageData } from "@/lib/data/loaders"
 import { fmt } from "@/lib/format"
 
@@ -54,7 +56,7 @@ export default async function CustomerPage() {
     })
     .reduce((s, b) => s + b.male + b.female, 0) / totalInsured
 
-  return (
+  const exploreView = (
     <div className="space-y-4">
       {/* Row 1 — Headline */}
       <KpiHero headline={headline} />
@@ -194,4 +196,34 @@ export default async function CustomerPage() {
       </Card>
     </div>
   )
+
+  const storyView = (
+    <div className="py-8">
+      <div className="text-caption uppercase tracking-wider text-text-tertiary mb-3">
+        Story · Customer & coverage
+      </div>
+      <h1 className="text-display leading-tight mb-6 max-w-3xl">
+        Who&apos;s covered, who&apos;s not, who&apos;s growing.
+      </h1>
+      <p className="text-body text-text-secondary leading-relaxed max-w-2xl mb-12">
+        A detailed narrative walkthrough of {latest.periodLabel} membership and coverage data is coming soon.
+        In the meantime, the dashboard view remains fully interactive — toggle Story Mode off
+        in the app bar to explore the data freely.
+      </p>
+      <NarrativeBeat
+        eyebrow="Headline result"
+        claim={headline.sentence}
+        body={
+          <p>
+            The detailed breakdown by state, age, and life-stage segment is explored in the standard dashboard view.
+            Toggle Story Mode off in the app bar to return to the full layout.
+          </p>
+        }
+        visual={<KpiHero headline={headline} />}
+        fullWidth
+      />
+    </div>
+  )
+
+  return <StoryFrame story={storyView} explore={exploreView} />
 }

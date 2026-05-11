@@ -4,6 +4,7 @@ import { Bell, Command, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
+import { StoryModeToggle } from "./story-mode-toggle"
 
 const titles: Record<string, string> = {
   "/overview": "Overview",
@@ -27,7 +28,9 @@ export function AppBar() {
           <span className="text-h2 font-semibold tracking-wide">AUSHEALTH</span>
           <span className="text-body-sm opacity-70">Group performance / {title}</span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <StoryModeToggle />
+          <div className="w-px h-6 bg-white/15 mx-1" />
           <button aria-label="Command menu" className="p-2 opacity-70 hover:opacity-100 transition-opacity">
             <Command size={18} strokeWidth={1.75} />
           </button>

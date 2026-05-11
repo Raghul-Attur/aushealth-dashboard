@@ -1,0 +1,286 @@
+{
+  "meta": {
+    "source": "APRA Quarterly Private Health Insurance Medical Services",
+    "sourceUrl": "https://www.apra.gov.au/quarterly-private-health-insurance-statistics",
+    "license": "CC BY 3.0 AU",
+    "periodEnd": "2025-12-31",
+    "periodLabel": "Dec 2025"
+  },
+  "periods": [
+    {
+      "periodEnd": "2024-03-31",
+      "periodLabel": "Mar 2024",
+      "totalBenefits": 627236219
+    },
+    {
+      "periodEnd": "2024-06-30",
+      "periodLabel": "Jun 2024",
+      "totalBenefits": 683098045
+    },
+    {
+      "periodEnd": "2024-09-30",
+      "periodLabel": "Sep 2024",
+      "totalBenefits": 718956901
+    },
+    {
+      "periodEnd": "2024-12-31",
+      "periodLabel": "Dec 2024",
+      "totalBenefits": 721356542
+    },
+    {
+      "periodEnd": "2025-03-31",
+      "periodLabel": "Mar 2025",
+      "totalBenefits": 658238454
+    },
+    {
+      "periodEnd": "2025-06-30",
+      "periodLabel": "Jun 2025",
+      "totalBenefits": 726558860
+    },
+    {
+      "periodEnd": "2025-09-30",
+      "periodLabel": "Sep 2025",
+      "totalBenefits": 770997674
+    },
+    {
+      "periodEnd": "2025-12-31",
+      "periodLabel": "Dec 2025",
+      "totalBenefits": 765169689
+    }
+  ],
+  "specialties": [
+    {
+      "specialty": "Anaesthesia",
+      "benefitsPaid": 196023594,
+      "priorYearBenefits": 185285968,
+      "yoyChange": 0.058
+    },
+    {
+      "specialty": "All other",
+      "benefitsPaid": 75484712,
+      "priorYearBenefits": 70573674,
+      "yoyChange": 0.0696
+    },
+    {
+      "specialty": "Specialist consultations",
+      "benefitsPaid": 65808555,
+      "priorYearBenefits": 62387297,
+      "yoyChange": 0.0548
+    },
+    {
+      "specialty": "Pathology",
+      "benefitsPaid": 48527265,
+      "priorYearBenefits": 44006456,
+      "yoyChange": 0.1027
+    },
+    {
+      "specialty": "Orthopaedics",
+      "benefitsPaid": 46775881,
+      "priorYearBenefits": 43660771,
+      "yoyChange": 0.0713
+    },
+    {
+      "specialty": "Cardio-thoracic",
+      "benefitsPaid": 43279582,
+      "priorYearBenefits": 40238413,
+      "yoyChange": 0.0756
+    },
+    {
+      "specialty": "Diagnostic imaging",
+      "benefitsPaid": 42069929,
+      "priorYearBenefits": 38496331,
+      "yoyChange": 0.0928
+    },
+    {
+      "specialty": "General surgery",
+      "benefitsPaid": 39941520,
+      "priorYearBenefits": 37630651,
+      "yoyChange": 0.0614
+    },
+    {
+      "specialty": "Ophthalmology",
+      "benefitsPaid": 37658120,
+      "priorYearBenefits": 38143154,
+      "yoyChange": -0.0127
+    },
+    {
+      "specialty": "Colorectal",
+      "benefitsPaid": 35211106,
+      "priorYearBenefits": 32640015,
+      "yoyChange": 0.0788
+    },
+    {
+      "specialty": "Obstetrics & gynaecology",
+      "benefitsPaid": 31450594,
+      "priorYearBenefits": 31909497,
+      "yoyChange": -0.0144
+    },
+    {
+      "specialty": "Surgical assistance",
+      "benefitsPaid": 23237681,
+      "priorYearBenefits": 22027058,
+      "yoyChange": 0.055
+    },
+    {
+      "specialty": "Urology",
+      "benefitsPaid": 19788949,
+      "priorYearBenefits": 18342936,
+      "yoyChange": 0.0788
+    },
+    {
+      "specialty": "Neurosurgery",
+      "benefitsPaid": 14820133,
+      "priorYearBenefits": 12996394,
+      "yoyChange": 0.1403
+    },
+    {
+      "specialty": "Plastic surgery",
+      "benefitsPaid": 13288183,
+      "priorYearBenefits": 12638208,
+      "yoyChange": 0.0514
+    },
+    {
+      "specialty": "Critical care",
+      "benefitsPaid": 13033321,
+      "priorYearBenefits": 12978353,
+      "yoyChange": 0.0042
+    },
+    {
+      "specialty": "ENT surgery",
+      "benefitsPaid": 9620363,
+      "priorYearBenefits": 8886278,
+      "yoyChange": 0.0826
+    },
+    {
+      "specialty": "Vascular",
+      "benefitsPaid": 9150193,
+      "priorYearBenefits": 8515080,
+      "yoyChange": 0.0746
+    }
+  ],
+  "heatmap": [
+    {
+      "state": "NSW",
+      "specialties": {
+        "Anaesthesia": 63373924,
+        "All other": 23023823,
+        "Specialist consultations": 16744503,
+        "Pathology": 14559099,
+        "Orthopaedics": 13897409,
+        "Cardio-thoracic": 14626346,
+        "Diagnostic imaging": 13605991,
+        "General surgery": 12154547
+      }
+    },
+    {
+      "state": "VIC",
+      "specialties": {
+        "Anaesthesia": 49834959,
+        "All other": 19502998,
+        "Specialist consultations": 22208351,
+        "Pathology": 12844196,
+        "Orthopaedics": 11228739,
+        "Cardio-thoracic": 11290276,
+        "Diagnostic imaging": 11118804,
+        "General surgery": 10645053
+      }
+    },
+    {
+      "state": "QLD",
+      "specialties": {
+        "Anaesthesia": 38624571,
+        "All other": 15211918,
+        "Specialist consultations": 16089160,
+        "Pathology": 12220380,
+        "Orthopaedics": 7369668,
+        "Cardio-thoracic": 8044747,
+        "Diagnostic imaging": 8401499,
+        "General surgery": 8215764
+      }
+    },
+    {
+      "state": "SA",
+      "specialties": {
+        "Anaesthesia": 14993290,
+        "All other": 5836093,
+        "Specialist consultations": 3986365,
+        "Pathology": 4238027,
+        "Orthopaedics": 5401909,
+        "Cardio-thoracic": 3321859,
+        "Diagnostic imaging": 2964690,
+        "General surgery": 3398564
+      }
+    },
+    {
+      "state": "WA",
+      "specialties": {
+        "Anaesthesia": 21321372,
+        "All other": 9132893,
+        "Specialist consultations": 4982543,
+        "Pathology": 2943736,
+        "Orthopaedics": 6741564,
+        "Cardio-thoracic": 4030446,
+        "Diagnostic imaging": 5004735,
+        "General surgery": 3996824
+      }
+    },
+    {
+      "state": "TAS",
+      "specialties": {
+        "Anaesthesia": 4511205,
+        "All other": 1802501,
+        "Specialist consultations": 979305,
+        "Pathology": 892605,
+        "Orthopaedics": 1637021,
+        "Cardio-thoracic": 926795,
+        "Diagnostic imaging": 531035,
+        "General surgery": 949409
+      }
+    },
+    {
+      "state": "ACT",
+      "specialties": {
+        "Anaesthesia": 2458827,
+        "All other": 715624,
+        "Specialist consultations": 646958,
+        "Pathology": 645425,
+        "Orthopaedics": 295809,
+        "Cardio-thoracic": 840100,
+        "Diagnostic imaging": 349425,
+        "General surgery": 340023
+      }
+    },
+    {
+      "state": "NT",
+      "specialties": {
+        "Anaesthesia": 905442,
+        "All other": 258858,
+        "Specialist consultations": 171365,
+        "Pathology": 183794,
+        "Orthopaedics": 203759,
+        "Cardio-thoracic": 199010,
+        "Diagnostic imaging": 93747,
+        "General surgery": 241331
+      }
+    }
+  ],
+  "topSpecialtiesForHeatmap": [
+    "Anaesthesia",
+    "All other",
+    "Specialist consultations",
+    "Pathology",
+    "Orthopaedics",
+    "Cardio-thoracic",
+    "Diagnostic imaging",
+    "General surgery"
+  ],
+  "gap": {
+    "totalFees": 2186208340,
+    "fundBenefits": 765169689,
+    "medicareBenefits": 985529189,
+    "patientOutOfPocket": 435509462,
+    "gapPct": 0.1992,
+    "totalServices": 11002976,
+    "avgBenefitPerService": 69.54
+  }
+}
