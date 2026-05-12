@@ -1,9 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { TrendingDown, TrendingUp, BarChart2, Activity, Zap, Info } from "lucide-react"
 import { Delta } from "./delta"
 import { Sparkline } from "./sparkline"
+import { Icon, type IconName } from "@/components/icons/icon-defs"
 import { useCountUp } from "@/hooks/use-count-up"
 import { fmt } from "@/lib/format"
 import { revealVariants, revealTransition } from "@/lib/motion"
@@ -17,27 +17,19 @@ type Props = {
   delta?: { value: number; unit?: "percent" | "pp"; inverse?: boolean }
   sparklineValues?: number[]
   sparklineLabels?: string[]
-  footnote1?: string
-  footnote2?: string
+  footnote?: [string, string]
   subtext?: string
   inverse?: boolean
-  emphasis?: boolean
+  tint?: "deep" | "cream"
+  labelIcon?: IconName
+  cornerIcon?: IconName
 }
 
 const formatters = {
   currency: fmt.currency,
-  percent: fmt.percent,
-  number: fmt.number,
-  pp: (n: number) => `${n.toFixed(1)}%`,
-}
-
-// Icons resolved internally by id — avoids passing functions across Server/Client boundary
-const iconMap: Record<string, React.ReactNode> = {
-  "net-margin":  <TrendingDown size={12} strokeWidth={1.75} />,
-  "revenue":     <TrendingUp   size={12} strokeWidth={1.75} />,
-  "net-profit":  <BarChart2    size={12} strokeWidth={1.75} />,
-  "loss-ratio":  <Activity     size={12} strokeWidth={1.75} />,
-  "investment":  <Zap          size={12} strokeWidth={1.75} />,
+  percent:  fmt.percent,
+  number:   fmt.number,
+  pp:       (n: number) => `${n.toFixed(2)}%`,
 }
 
 export function KpiTile({
@@ -49,56 +41,44 @@ export function KpiTile({
   delta,
   sparklineValues,
   sparklineLabels,
-  footnote1,
-  footnote2,
+  footnote,
   subtext,
   inverse = false,
-  emphasis = false,
+  tint,
+  labelIcon,
+  cornerIcon,
 }: Props) {
   const animated = useCountUp({ id, to: rawValue, duration: 700 })
   const displayValue = formatters[format](animated)
-  const icon = iconMap[id] ?? <Info size={12} strokeWidth={1.75} />
 
-  if (emphasis) {
+  if (tint === "deep") {
     return (
       <motion.div
         variants={revealVariants}
         transition={revealTransition}
-        className="card-inverse flex flex-col min-h-[160px]"
+        className="glass-deep flex flex-col min-h-[180px] gap-3"
       >
-        {/* Label row */}
         <div className="flex items-start justify-between gap-2">
-          <div>
-            <div
-              className="text-[10px] font-semibold uppercase tracking-[0.1em]"
-              style={{ color: "rgb(255 255 255 / 0.5)" }}
-            >
-              {label}
-            </div>
-            {sublabel && (
-              <div className="text-[10px] mt-0.5" style={{ color: "rgb(255 255 255 / 0.35)" }}>
-                {sublabel}
+          <div className="flex items-center gap-2">
+            {labelIcon && <Icon name={labelIcon} size="sm" style={{ color: "rgb(255 255 255 / 0.55)" }} />}
+            <div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.16em] font-sans" style={{ color: "rgb(255 255 255 / 0.55)" }}>
+                {label}
               </div>
-            )}
+              {sublabel && <div className="text-[10px] mt-0.5 font-sans" style={{ color: "rgb(255 255 255 / 0.35)" }}>{sublabel}</div>}
+            </div>
           </div>
-          <div
-            className="p-1.5 rounded-md flex-shrink-0"
-            style={{ background: "rgb(255 255 255 / 0.08)", color: "rgb(255 255 255 / 0.5)" }}
-          >
-            {icon}
-          </div>
+          {cornerIcon && (
+            <div className="p-1.5 rounded-xl flex-shrink-0" style={{ background: "rgb(255 255 255 / 0.1)", color: "rgb(255 255 255 / 0.55)" }}>
+              <Icon name={cornerIcon} size="sm" />
+            </div>
+          )}
         </div>
 
-        {/* Value */}
-        <div className="mt-3">
+        <div>
           <div
-            className="tabular leading-none"
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(28px, 4vw, 40px)",
-              fontWeight: 800,
-              color: "#ffffff",
-            }}
+            className="tabular leading-none font-serif"
+            style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 300, fontStyle: "italic", color: "#ffffff", fontVariationSettings: '"opsz" 144, "SOFT" 30' }}
           >
             {displayValue}
           </div>
@@ -109,106 +89,130 @@ export function KpiTile({
           )}
         </div>
 
-        {/* Sparkline */}
         {sparklineValues && sparklineValues.length >= 2 && (
-          <div className="mt-3">
+          <div className="mt-1">
             <Sparkline values={sparklineValues} labels={sparklineLabels} inverse={inverse} dark static />
           </div>
         )}
 
-        {/* Subtext */}
         {subtext && (
-          <p className="text-[11px] leading-snug mt-3" style={{ color: "rgb(255 255 255 / 0.45)" }}>
+          <p className="font-serif text-[13px] font-light italic leading-snug" style={{ color: "rgb(255 255 255 / 0.5)" }}>
             {subtext}
           </p>
         )}
 
-        {/* Footnotes */}
-        {(footnote1 || footnote2) && (
-          <div
-            className="flex items-center gap-3 mt-2 text-[11px]"
-            style={{ color: "rgb(255 255 255 / 0.35)" }}
-          >
-            {footnote1 && <span>{footnote1}</span>}
-            {footnote2 && <span>{footnote2}</span>}
+        {footnote && (footnote[0] || footnote[1]) && (
+          <div className="mt-auto flex items-center gap-3 text-[11px] font-sans" style={{ color: "rgb(255 255 255 / 0.35)" }}>
+            {footnote[0] && <span>{footnote[0]}</span>}
+            {footnote[1] && <><span style={{ color: "rgb(255 255 255 / 0.18)" }}>·</span><span>{footnote[1]}</span></>}
           </div>
         )}
       </motion.div>
     )
   }
 
-  // Standard light tile
+  if (tint === "cream") {
+    return (
+      <motion.div
+        variants={revealVariants}
+        transition={revealTransition}
+        className="glass-cream flex flex-col min-h-[180px] gap-3"
+      >
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center gap-2">
+            {labelIcon && <Icon name={labelIcon} size="sm" className="text-bupa-blue-deep" />}
+            <div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-text-tertiary font-sans">{label}</div>
+              {sublabel && <div className="text-[10px] mt-0.5 text-text-tertiary">{sublabel}</div>}
+            </div>
+          </div>
+          {cornerIcon && (
+            <div className="p-1.5 rounded-xl flex-shrink-0" style={{ background: "rgb(0 85 142 / 0.08)", color: "var(--color-bupa-blue-deep)" }}>
+              <Icon name={cornerIcon} size="sm" />
+            </div>
+          )}
+        </div>
+
+        <div>
+          <div
+            className="tabular leading-none font-serif"
+            style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 300, fontStyle: "italic", color: "var(--color-bupa-navy)", fontVariationSettings: '"opsz" 144, "SOFT" 30' }}
+          >
+            {displayValue}
+          </div>
+          {delta && (
+            <div className="mt-2">
+              <Delta value={delta.value} unit={delta.unit} inverse={delta.inverse} pill />
+            </div>
+          )}
+        </div>
+
+        {sparklineValues && sparklineValues.length >= 2 && (
+          <div className="mt-1 flex-1 flex items-end">
+            <Sparkline values={sparklineValues} labels={sparklineLabels} inverse={inverse} static />
+          </div>
+        )}
+
+        {subtext && <p className="font-serif text-[13px] font-light italic leading-snug text-text-secondary">{subtext}</p>}
+
+        {footnote && (footnote[0] || footnote[1]) && (
+          <div className="mt-auto flex items-center gap-3 text-[11px] font-sans text-text-tertiary">
+            {footnote[0] && <span>{footnote[0]}</span>}
+            {footnote[1] && <><span>·</span><span>{footnote[1]}</span></>}
+          </div>
+        )}
+      </motion.div>
+    )
+  }
+
+  // Standard card
   return (
     <motion.div
       variants={revealVariants}
       transition={revealTransition}
-      className="card flex flex-col min-h-[160px]"
+      className="card flex flex-col min-h-[180px] gap-3"
     >
-      {/* Label + icon */}
       <div className="flex items-start justify-between gap-2">
-        <div>
-          <div
-            className="text-[10px] font-semibold uppercase tracking-[0.1em]"
-            style={{ color: "var(--color-text-tertiary)" }}
-          >
-            {label}
+        <div className="flex items-center gap-2">
+          {labelIcon && <Icon name={labelIcon} size="sm" className="text-text-tertiary" />}
+          <div>
+            <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-text-tertiary font-sans">{label}</div>
+            {sublabel && <div className="text-[10px] mt-0.5 text-text-tertiary">{sublabel}</div>}
           </div>
-          {sublabel && (
-            <div className="text-[10px] mt-0.5" style={{ color: "var(--color-text-tertiary)" }}>
-              {sublabel}
-            </div>
-          )}
         </div>
+        {cornerIcon && (
+          <div className="p-1.5 rounded-xl flex-shrink-0" style={{ background: "var(--color-subtle)", color: "var(--color-text-tertiary)" }}>
+            <Icon name={cornerIcon} size="sm" />
+          </div>
+        )}
+      </div>
+
+      <div>
         <div
-          className="p-1.5 rounded-md flex-shrink-0"
-          style={{ background: "var(--color-subtle)", color: "var(--color-text-tertiary)" }}
+          className="tabular leading-none font-serif"
+          style={{ fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 300, fontStyle: "italic", color: "var(--color-bupa-navy)", fontVariationSettings: '"opsz" 144, "SOFT" 30' }}
         >
-          {icon}
+          {displayValue}
         </div>
+        {delta && (
+          <div className="mt-2">
+            <Delta value={delta.value} unit={delta.unit} inverse={delta.inverse} pill />
+          </div>
+        )}
       </div>
 
-      {/* Value */}
-      <div
-        className="tabular mt-3 leading-none"
-        style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "clamp(22px, 3vw, 32px)",
-          fontWeight: 800,
-          color: "var(--color-text-primary)",
-        }}
-      >
-        {displayValue}
-      </div>
-
-      {/* Delta */}
-      {delta && (
-        <div className="mt-2">
-          <Delta value={delta.value} unit={delta.unit} inverse={delta.inverse} pill />
-        </div>
-      )}
-
-      {/* Sparkline */}
       {sparklineValues && sparklineValues.length >= 2 && (
-        <div className="mt-3 flex-1 flex items-end">
+        <div className="mt-1 flex-1 flex items-end">
           <Sparkline values={sparklineValues} labels={sparklineLabels} inverse={inverse} static />
         </div>
       )}
 
-      {/* Subtext */}
-      {subtext && (
-        <p className="text-[11px] leading-snug mt-2" style={{ color: "var(--color-text-tertiary)" }}>
-          {subtext}
-        </p>
-      )}
+      {subtext && <p className="font-serif text-[13px] font-light italic leading-snug text-text-secondary">{subtext}</p>}
 
-      {/* Footnotes */}
-      {(footnote1 || footnote2) && (
-        <div
-          className="flex items-center gap-3 mt-2 text-[11px]"
-          style={{ color: "var(--color-text-tertiary)" }}
-        >
-          {footnote1 && <span>{footnote1}</span>}
-          {footnote2 && <span>{footnote2}</span>}
+      {footnote && (footnote[0] || footnote[1]) && (
+        <div className="mt-auto flex items-center gap-3 text-[11px] font-sans text-text-tertiary">
+          {footnote[0] && <span>{footnote[0]}</span>}
+          {footnote[1] && <><span>·</span><span>{footnote[1]}</span></>}
         </div>
       )}
     </motion.div>
