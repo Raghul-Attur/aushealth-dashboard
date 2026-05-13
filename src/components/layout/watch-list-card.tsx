@@ -62,7 +62,7 @@ export function WatchListCard({ item }: { item: WatchItem & { severity: string }
           {t.label}
         </span>
         <div
-          className="mt-1.5 font-serif text-[18px] font-normal leading-[1.2] tracking-[-0.015em]"
+          className="mt-1.5 font-sans font-bold text-[15px] font-normal leading-[1.2] tracking-[-0.015em]"
           style={{ color: "var(--color-bupa-navy)" }}
         >
           {item.title}

@@ -32,10 +32,11 @@ export function SectionHeader({ eyebrow, title, accentWord, subtitle, right }: P
         <h2
           className="leading-tight"
           style={{
-            fontFamily: "var(--font-display)",
+            fontFamily: "var(--font-sans)",
             fontSize: "22px",
             fontWeight: 800,
-            color: "var(--color-text-primary)",
+            letterSpacing: "-0.025em",
+            color: "var(--color-bupa-navy)",
           }}
         >
           {titleContent}

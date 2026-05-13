@@ -3,14 +3,14 @@
 import { Bell, Search } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { Icon } from "@/components/icons/icon-defs"
 import { StoryModeToggle } from "./story-mode-toggle"
 
 const tabs = [
-  { href: "/overview", label: "Overview" },
-  { href: "/financial", label: "Financial" },
-  { href: "/customer", label: "Customer" },
-  { href: "/operational", label: "Operational" },
-  { href: "/risk", label: "Risk & Capital" },
+  { href: "/overview",    label: "Overview",    icon: "activity" as const },
+  { href: "/financial",   label: "Financial",   icon: "coin" as const },
+  { href: "/customer",    label: "Customer",    icon: "eye-open" as const },
+  { href: "/operational", label: "Operational", icon: "activity" as const },
 ]
 
 export function AppBar() {
@@ -18,111 +18,110 @@ export function AppBar() {
 
   return (
     <header
-      className="sticky top-0 z-40 border-b"
+      className="relative z-40 sticky top-0"
       style={{
-        background: "var(--color-surface-raised)",
-        borderColor: "var(--color-border-subtle)",
+        background: "rgba(238,243,248,0.75)",
+        backdropFilter: "blur(20px) saturate(180%)",
+        borderBottom: "1px solid rgba(0,47,108,0.06)",
       }}
     >
-      <div className="mx-auto max-w-[1440px] px-8">
-        {/* Top row */}
-        <div className="h-12 flex items-center justify-between gap-6">
-          {/* Left: wordmark + breadcrumb */}
-          <div className="flex items-center gap-3">
-            {/* Plus icon wordmark */}
-            <div className="flex items-center gap-2">
-              <div
-                className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white"
-                style={{ background: "var(--color-accent)" }}
-              >
-                +
-              </div>
-              <span
-                className="text-[13px] font-semibold tracking-[0.04em] uppercase"
-                style={{ fontFamily: "var(--font-display)", color: "var(--color-text-primary)" }}
-              >
-                AusHealth
-              </span>
-            </div>
-            <span style={{ color: "var(--color-border-default)" }}>·</span>
-            <span className="text-[13px]" style={{ color: "var(--color-text-secondary)" }}>
-              Group performance
-            </span>
+      <div className="mx-auto max-w-[1440px] px-10 h-14 flex items-center justify-between gap-6">
+        {/* Brand mark only — no "Group performance" text */}
+        <div className="flex items-center gap-2.5 flex-shrink-0">
+          <div
+            className="w-7 h-7 rounded-full relative flex-shrink-0"
+            style={{
+              background: "radial-gradient(circle at 32% 28%, #6cc1ed 0%, var(--color-bupa-blue) 55%, var(--color-bupa-navy) 95%)",
+              boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.55), 0 6px 16px rgba(0,85,142,0.3)",
+            }}
+          >
+            <span className="absolute inset-0 flex items-center justify-center font-sans font-bold text-white" style={{ fontSize: "16px" }}>+</span>
           </div>
-
-          {/* Right: controls */}
-          <div className="flex items-center gap-1">
-            <StoryModeToggle />
-            <div
-              className="w-px h-5 mx-2"
-              style={{ background: "var(--color-border-subtle)" }}
-            />
-            <button
-              aria-label="Search"
-              className="p-2 rounded-lg transition-colors hover:bg-subtle"
-              style={{ color: "var(--color-text-tertiary)" }}
-            >
-              <Search size={16} strokeWidth={1.75} />
-            </button>
-            <button
-              aria-label="Notifications"
-              className="p-2 rounded-lg transition-colors hover:bg-subtle"
-              style={{ color: "var(--color-text-tertiary)" }}
-            >
-              <Bell size={16} strokeWidth={1.75} />
-            </button>
-            {/* Avatar */}
-            <div
-              className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-semibold ml-1"
-              style={{
-                background: "var(--color-accent)",
-                color: "#ffffff",
-              }}
-            >
-              RS
-            </div>
-          </div>
+          <strong className="font-sans font-semibold tracking-[0.18em] uppercase text-[13px]" style={{ color: "var(--color-bupa-navy)" }}>
+            AusHealth
+          </strong>
         </div>
 
-        {/* Tab strip */}
-        <nav className="flex items-center gap-0 -mb-px">
+        {/* Pill nav — no Risk & Capital */}
+        <nav className="flex items-center gap-1">
           {tabs.map((tab) => {
-            const active = pathname === tab.href || (tab.href !== "/" && pathname.startsWith(tab.href))
+            const active = pathname === tab.href || pathname.startsWith(tab.href + "/")
             return (
               <Link
                 key={tab.href}
                 href={tab.href}
-                className="relative px-4 py-2.5 text-[13px] transition-colors whitespace-nowrap"
+                className="inline-flex items-center gap-1.5 font-sans text-[13px] font-medium transition-all"
                 style={{
-                  color: active ? "var(--color-text-primary)" : "var(--color-text-secondary)",
-                  fontWeight: active ? 500 : 400,
-                  borderBottom: active
-                    ? "2px solid var(--color-text-primary)"
-                    : "2px solid transparent",
+                  padding: "7px 14px",
+                  borderRadius: "999px",
+                  color: active ? "#fff" : "var(--color-text-secondary)",
+                  background: active ? "var(--color-bupa-navy)" : "transparent",
+                  boxShadow: active ? "0 8px 20px -8px rgba(10,31,68,0.5)" : "none",
+                  textDecoration: "none",
                 }}
               >
+                <Icon name={tab.icon} size="sm" style={{ color: active ? "#fff" : "var(--color-text-tertiary)" }} />
                 {tab.label}
               </Link>
             )
           })}
+        </nav>
 
-          {/* Quarter selector pill — right aligned */}
-          <div className="ml-auto mb-1">
-            <div
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium"
+        {/* Right controls */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Quarter pill */}
+          <div
+            className="inline-flex items-center gap-2 font-sans text-[12px] font-medium"
+            style={{
+              background: "rgba(255,255,255,0.84)",
+              border: "1px solid rgba(255,255,255,0.92)",
+              borderRadius: "999px",
+              padding: "7px 14px",
+              color: "var(--color-bupa-ink)",
+              boxShadow: "0 4px 14px -6px rgba(10,31,68,0.22)",
+              backdropFilter: "blur(20px)",
+            }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-bupa-blue)", boxShadow: "0 0 0 3px rgba(0,121,200,0.18)" }} />
+            Q2 FY2026 · Industry aggregate
+          </div>
+
+          {/* Story mode — visible on warm bg */}
+          <StoryModeToggle />
+
+          {/* Search + Bell */}
+          {[Search, Bell].map((Comp, i) => (
+            <button
+              key={i}
+              type="button"
+              className="inline-flex items-center justify-center"
               style={{
-                background: "var(--color-inverse)",
-                color: "#ffffff",
+                width: "34px", height: "34px", borderRadius: "50%",
+                background: "rgba(255,255,255,0.84)",
+                border: "1px solid rgba(255,255,255,0.92)",
+                color: "var(--color-bupa-navy)",
+                boxShadow: "0 4px 14px -6px rgba(10,31,68,0.22)",
+                backdropFilter: "blur(20px)",
+                cursor: "pointer",
               }}
             >
-              <span
-                className="w-1.5 h-1.5 rounded-full animate-pulse"
-                style={{ background: "#4ade80" }}
-              />
-              Q2 FY2026 · Industry aggregate
-            </div>
+              <Comp size={15} strokeWidth={1.75} />
+            </button>
+          ))}
+
+          {/* Avatar */}
+          <div
+            className="inline-flex items-center justify-center font-sans text-[12px] font-semibold text-white"
+            style={{
+              width: "34px", height: "34px", borderRadius: "50%",
+              background: "linear-gradient(135deg, var(--color-bupa-navy), var(--color-bupa-blue))",
+              border: "2px solid rgba(255,255,255,0.9)",
+              boxShadow: "0 4px 14px -4px rgba(10,31,68,0.4)",
+            }}
+          >
+            RS
           </div>
-        </nav>
+        </div>
       </div>
     </header>
   )

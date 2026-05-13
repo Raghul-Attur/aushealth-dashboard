@@ -9,7 +9,10 @@ export function KpiStrip({ children }: { children: React.ReactNode }) {
       initial="hidden"
       animate="visible"
       variants={staggerContainer}
-      className="grid grid-cols-2 lg:grid-cols-5 gap-3"
+      className="grid gap-3.5"
+      style={{
+        gridTemplateColumns: "1.4fr 1fr 1fr 1fr 1fr",
+      }}
     >
       {children}
     </motion.div>

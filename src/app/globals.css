@@ -1,78 +1,81 @@
 @import "tailwindcss";
 
 @theme {
-  /* Fonts */
   --font-sans: var(--font-inter), system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
   --font-serif: var(--font-fraunces), var(--font-instrument-serif), Georgia, serif;
   --font-display: var(--font-fraunces), var(--font-instrument-serif), Georgia, serif;
-  --font-display-sans: "Cabinet Grotesk", var(--font-inter), system-ui, sans-serif;
 
-  /* Brand */
-  --color-bupa-blue: #0079c8;
-  --color-bupa-blue-deep: #00558e;
-  --color-bupa-navy: #0a1f44;
-  --color-bupa-ink: #11162a;
-  --color-bupa-ink-2: #1f2a4a;
-  --color-bupa-violet: #4b3a9a;
-  --color-bupa-sky: #b8dcef;
-  --color-bupa-mist: #e8f1f8;
-  --color-bupa-gold: #c19a4b;
-  --color-bupa-rose: #c25c6a;
-  --color-bupa-cream: #f5efe6;
-  --color-bupa-paper: #fbf7f1;
+  /* ── Bupa exact brand palette ── */
+  --color-bupa-blue: #0079C8;
+  --color-bupa-blue-deep: #005EA8;
+  --color-bupa-navy: #002F6C;
+  --color-bupa-teal: #00A9CE;
+  --color-bupa-teal-light: #E8F4FB;
+  --color-bupa-ink: #001B3F;
+  --color-bupa-ink-2: #003070;
+  --color-bupa-violet: #6B3FA0;
+  --color-bupa-sky: #B8DCF0;
+  --color-bupa-mist: #E8F4FB;
+  --color-bupa-gold: #C19A4B;
+  --color-bupa-rose: #C25C6A;
+  --color-bupa-cream: #F5EFE6;
+  --color-bupa-paper: #FBFAF8;
 
-  /* Surfaces */
-  --color-canvas: #f3eee5;
-  --color-canvas-deep: #ece4d3;
-  --color-surface: #fbf7f1;
-  --color-surface-raised: #ffffff;
-  --color-subtle: #ece4d3;
-  --color-inverse: #0a1f44;
+  /* ── Surfaces ── */
+  --color-canvas: #EEF3F8;
+  --color-canvas-deep: #E2EAF2;
+  --color-surface: #FFFFFF;
+  --color-surface-raised: #FFFFFF;
+  --color-subtle: #E4EDF6;
+  --color-inverse: #002F6C;
 
-  /* Text */
-  --color-text-primary: #11162a;
-  --color-text-secondary: #36406a;
-  --color-text-tertiary: #6b7493;
+  /* ── Text ── */
+  --color-text-primary: #001B3F;
+  --color-text-secondary: #2C4A72;
+  --color-text-tertiary: #6B84A0;
   --color-text-inverse: #ffffff;
 
-  /* Borders */
-  --color-border-subtle: rgb(10 31 68 / 0.08);
-  --color-border-default: rgb(10 31 68 / 0.14);
-  --color-border-strong: rgb(10 31 68 / 0.24);
+  /* ── Borders ── */
+  --color-border-subtle: rgb(0 47 108 / 0.08);
+  --color-border-default: rgb(0 47 108 / 0.14);
+  --color-border-strong: rgb(0 47 108 / 0.24);
 
-  /* Semantic */
-  --color-positive: #2e7d52;
-  --color-positive-bg: #d6ecdf;
-  --color-negative: #b03a3a;
-  --color-negative-bg: #f3d8d8;
-  --color-warning: #a16314;
-  --color-warning-bg: #f4e6c9;
-  --color-info: #00558e;
+  /* ── Semantic ── */
+  --color-positive: #00857C;
+  --color-positive-bg: #E0F3F2;
+  --color-positive-text: #005C56;
+  --color-negative: #C0392B;
+  --color-negative-bg: #FBEAE8;
+  --color-negative-text: #8B2820;
+  --color-warning: #B07A0A;
+  --color-warning-bg: #FDF3DC;
+  --color-warning-text: #7A5407;
+  --color-info: #005EA8;
 
-  /* Chart series */
-  --color-chart-1: #0a1f44;
-  --color-chart-1-rich: #0079c8;
-  --color-chart-2: #0079c8;
-  --color-chart-3: #4b3a9a;
-  --color-chart-4: #c19a4b;
-  --color-chart-5: #2e7d52;
-  --color-chart-6: #c25c6a;
-  --color-chart-7: #6b7493;
+  /* ── Chart series ── */
+  --color-chart-1: #002F6C;
+  --color-chart-1-rich: #0079C8;
+  --color-chart-2: #0079C8;
+  --color-chart-3: #00A9CE;
+  --color-chart-4: #6B3FA0;
+  --color-chart-5: #00857C;
+  --color-chart-6: #C25C6A;
+  --color-chart-7: #C19A4B;
 
-  /* Sequential ramp */
-  --color-seq-1: #f0e8d6;
-  --color-seq-2: #d3c8b0;
-  --color-seq-3: #8aa3c3;
-  --color-seq-4: #3f5288;
-  --color-seq-5: #0a1f44;
+  /* ── Sequential ramp ── */
+  --color-seq-1: #E8F4FB;
+  --color-seq-2: #B8DCF0;
+  --color-seq-3: #5BAEDD;
+  --color-seq-4: #0079C8;
+  --color-seq-5: #002F6C;
 
-  /* Glass */
-  --color-glass-bg: rgb(255 255 255 / 0.62);
-  --color-glass-bg-strong: rgb(255 255 255 / 0.84);
-  --color-glass-border: rgb(255 255 255 / 0.88);
+  /* ── Glass ── */
+  --color-glass-bg: rgb(255 255 255 / 0.65);
+  --color-glass-bg-strong: rgb(255 255 255 / 0.88);
+  --color-glass-border: rgb(255 255 255 / 0.90);
 
-  /* Type scale */
+  /* ── Type scale ── */
   --text-micro: 11px;
   --text-micro--line-height: 16px;
   --text-caption: 12px;
@@ -89,44 +92,37 @@
   --text-h1--line-height: 32px;
   --text-display: 34px;
   --text-display--line-height: 40px;
-  --text-headline: 64px;
-  --text-headline--line-height: 60px;
-  --text-headline-xl: 96px;
-  --text-headline-xl--line-height: 88px;
   --text-kpi-medium: 20px;
   --text-kpi-medium--line-height: 24px;
   --text-kpi-large: 48px;
   --text-kpi-large--line-height: 48px;
-  --text-kpi-hero: 88px;
-  --text-kpi-hero--line-height: 84px;
+  --text-kpi-hero: 80px;
+  --text-kpi-hero--line-height: 76px;
   --text-delta: 13px;
   --text-delta--line-height: 18px;
 
-  /* Radii */
+  /* ── Radii ── */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-pill: 999px;
 
-  /* Easing */
   --ease-product: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 :root {
   --glass-shadow:
-    0 30px 60px -30px rgb(10 31 68 / 0.30),
-    0 8px 24px -12px rgb(10 31 68 / 0.14),
+    0 30px 60px -30px rgb(0 47 108 / 0.28),
+    0 8px 24px -12px rgb(0 47 108 / 0.12),
     inset 0 1px 0 rgb(255 255 255 / 0.92);
   --glass-shadow-soft:
-    0 8px 24px -12px rgb(10 31 68 / 0.22),
+    0 8px 24px -12px rgb(0 47 108 / 0.18),
     inset 0 1px 0 rgb(255 255 255 / 0.92);
 }
 
 @layer base {
-  * {
-    border-color: var(--color-border-subtle);
-  }
+  * { border-color: var(--color-border-subtle); }
 
   html {
     background: var(--color-canvas);
@@ -142,6 +138,7 @@
     background: var(--color-canvas);
     -webkit-font-smoothing: antialiased;
     letter-spacing: -0.005em;
+    overflow-x: hidden;
   }
 
   .tabular {
@@ -149,18 +146,23 @@
     font-feature-settings: "tnum";
   }
 
-  .serif {
-    font-family: var(--font-serif);
-  }
+  .serif { font-family: var(--font-serif); }
+  .display { font-family: var(--font-display); }
 
-  .display {
-    font-family: var(--font-display);
+  /* Hide Novu browser extension */
+  [data-novu-root], [data-novu-bell],
+  #novu-notification-center,
+  [class*="novu"], [id*="novu"] {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    pointer-events: none !important;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -169,9 +171,8 @@
 }
 
 @layer components {
-  /* ============================================================
-     Atmospheric scene
-     ============================================================ */
+
+  /* ── Scene ── */
   .scene {
     position: relative;
     min-height: 100vh;
@@ -184,33 +185,27 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(120% 80% at 85% 0%, #f7e6cf 0%, rgb(247 230 207 / 0) 55%),
-      radial-gradient(70% 60% at 15% 25%, #d8e8f5 0%, rgb(216 232 245 / 0) 60%),
-      linear-gradient(180deg, #f3eee5 0%, #ece4d3 100%);
+      radial-gradient(130% 80% at 88% 0%, #C8E4F5 0%, rgb(200 228 245 / 0) 52%),
+      radial-gradient(70% 55% at 12% 20%, #D4EAF7 0%, rgb(212 234 247 / 0) 58%),
+      linear-gradient(180deg, #EEF3F8 0%, #E2EAF2 100%);
     z-index: -2;
   }
 
   .scene::after {
     content: "";
     position: absolute;
-    top: 6%;
-    right: -8%;
-    width: 820px;
-    height: 820px;
+    top: 4%; right: -6%;
+    width: 760px; height: 760px;
     background:
-      radial-gradient(
-        circle at 35% 30%,
-        rgb(0 121 200 / 0.55) 0%,
-        rgb(0 85 142 / 0.32) 22%,
-        rgb(75 58 154 / 0.18) 45%,
-        rgb(255 255 255 / 0) 70%
-      ),
-      radial-gradient(
-        circle at 65% 65%,
-        rgb(193 154 75 / 0.32) 0%,
-        rgb(193 154 75 / 0) 40%
-      );
-    filter: blur(70px);
+      radial-gradient(circle at 35% 30%,
+        rgb(0 121 200 / 0.50) 0%,
+        rgb(0 169 206 / 0.28) 28%,
+        rgb(0 47 108 / 0.14) 52%,
+        transparent 70%),
+      radial-gradient(circle at 70% 65%,
+        rgb(0 169 206 / 0.22) 0%,
+        transparent 42%);
+    filter: blur(64px);
     z-index: -1;
     pointer-events: none;
   }
@@ -221,13 +216,11 @@
     pointer-events: none;
     z-index: 0;
     mix-blend-mode: overlay;
-    opacity: 0.16;
+    opacity: 0.12;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   }
 
-  /* ============================================================
-     Card surfaces
-     ============================================================ */
+  /* ── Cards ── */
   .card {
     background: var(--color-surface);
     border: 0.5px solid var(--color-border-subtle);
@@ -248,11 +241,12 @@
     padding: 16px;
   }
 
+  /* ── Glass surfaces ── */
   .glass {
     position: relative;
     background: var(--color-glass-bg);
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid var(--color-glass-border);
     border-radius: var(--radius-xl);
     padding: 24px;
@@ -262,8 +256,8 @@
 
   .glass-strong {
     background: var(--color-glass-bg-strong);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid var(--color-glass-border);
     border-radius: var(--radius-xl);
     box-shadow: var(--glass-shadow-soft);
@@ -273,11 +267,11 @@
     position: relative;
     background: linear-gradient(
       155deg,
-      rgb(240 226 200 / 0.95),
-      rgb(255 248 235 / 0.88)
+      rgb(232 244 251 / 0.90),
+      rgb(255 255 255 / 0.70)
     );
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid var(--color-glass-border);
     border-radius: var(--radius-xl);
     padding: 24px;
@@ -288,12 +282,12 @@
   .glass-deep {
     position: relative;
     background: linear-gradient(
-      160deg,
+      155deg,
       var(--color-bupa-navy) 0%,
-      #142a55 55%,
+      #003D8A 50%,
       var(--color-bupa-blue-deep) 100%
     );
-    border: 1px solid rgb(255 255 255 / 0.12);
+    border: 1px solid rgb(255 255 255 / 0.14);
     border-radius: var(--radius-xl);
     padding: 28px;
     box-shadow: var(--glass-shadow);
@@ -304,22 +298,17 @@
   .glass-deep::before {
     content: "";
     position: absolute;
-    top: -40%;
-    right: -20%;
-    width: 360px;
-    height: 360px;
+    top: -40%; right: -20%;
+    width: 340px; height: 340px;
     border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      rgb(0 121 200 / 0.55),
-      rgb(0 121 200 / 0) 70%
-    );
+    background: radial-gradient(circle,
+      rgb(0 169 206 / 0.45),
+      rgb(0 121 200 / 0.20) 40%,
+      transparent 70%);
     pointer-events: none;
   }
 
-  /* ============================================================
-     Live pulse
-     ============================================================ */
+  /* ── Live pulse ── */
   .live-dot {
     display: inline-flex;
     align-items: center;
@@ -334,24 +323,19 @@
 
   .live-dot::before {
     content: "";
-    width: 6px;
-    height: 6px;
+    width: 6px; height: 6px;
     border-radius: 50%;
     background: var(--color-bupa-blue);
-    box-shadow: 0 0 0 4px rgb(0 121 200 / 0.18);
+    box-shadow: 0 0 0 4px rgb(0 121 200 / 0.20);
     animation: live-pulse 2s ease infinite;
   }
 
   @keyframes live-pulse {
-    50% {
-      box-shadow: 0 0 0 9px rgb(0 121 200 / 0);
-    }
+    50% { box-shadow: 0 0 0 9px rgb(0 121 200 / 0); }
   }
 
   @keyframes ring-spin {
-    to {
-      transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
   }
 
   .animate-ring-spin {
