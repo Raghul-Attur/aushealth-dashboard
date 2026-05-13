@@ -1,128 +1,146 @@
 import { KpiHero } from "@/components/kpi/kpi-hero"
 import { KpiTile } from "@/components/kpi/kpi-tile"
 import { KpiStrip } from "@/components/kpi/kpi-strip"
-import { Card } from "@/components/layout/card"
 import { SectionHeader } from "@/components/layout/section-header"
 import { SpecialtyTreemap } from "@/components/charts/specialty-treemap"
 import { GapFlow } from "@/components/charts/gap-flow"
 import { StateSpecialtyHeatmap } from "@/components/charts/state-specialty-heatmap"
 import { StoryFrame } from "@/components/story/story-frame"
 import { NarrativeBeat } from "@/components/story/beat"
+import { Icon } from "@/components/icons/icon-defs"
 import { getOperationalData } from "@/lib/data/loaders"
 import { fmt } from "@/lib/format"
+import type { Headline } from "@/lib/insights"
+
+function PillCell({ value, threshold, inverse = false }: { value: number; threshold: number; inverse?: boolean }) {
+  const above = value > threshold
+  const good = inverse ? !above : above
+  return (
+    <span className="inline-flex items-center rounded-full px-2.5 py-0.5 font-sans text-[11px] font-medium"
+      style={{ background: good ? "var(--color-positive-bg)" : "var(--color-negative-bg)", color: good ? "var(--color-positive)" : "var(--color-negative)" }}>
+      {fmt.percent(value)}
+    </span>
+  )
+}
 
 export default async function OperationalPage() {
   const data = await getOperationalData()
 
-  // Sparklines from period series
   const labels = data.periods.map((p) => p.periodLabel)
   const benefitsSpark = data.periods.map((p) => p.totalBenefits)
 
-  // Period deltas
   const latest = data.periods.at(-1)!
   const prior = data.periods.at(-2) ?? null
   const yearAgo = data.periods.at(-5) ?? null
 
   const benefitsQoQ = prior
-    ? (latest.totalBenefits - prior.totalBenefits) / prior.totalBenefits
-    : 0
+    ? (latest.totalBenefits - prior.totalBenefits) / prior.totalBenefits : 0
   const benefitsYoY = yearAgo
-    ? (latest.totalBenefits - yearAgo.totalBenefits) / yearAgo.totalBenefits
-    : 0
+    ? (latest.totalBenefits - yearAgo.totalBenefits) / yearAgo.totalBenefits : 0
 
   const fastestGrowing = [...data.specialties].sort((a, b) => b.yoyChange - a.yoyChange)[0]
   const largest = data.specialties[0]
 
-  // Headline
-  const headline = {
-    status: data.gap.gapPct > 0.18 ? "watch" : ("healthy" as "healthy" | "watch" | "action"),
+  const headline: Headline = {
+    status: data.gap.gapPct > 0.18 ? "watch" : "healthy",
     statusLabel: data.gap.gapPct > 0.18 ? "Watch" : "Healthy",
+    part1: data.gap.gapPct > 0.18 ? "Elevated patient gap" : "Stable claims flow",
+    part2: fastestGrowing ? `${fastestGrowing.specialty.toLowerCase()} leading growth` : "benefits on track",
+    part2Status: benefitsYoY > 0.08 ? "watch" : "healthy",
     sentence: `Funds paid ${fmt.currency(data.gap.fundBenefits)} in medical benefits across ${fmt.number(data.gap.totalServices)} services this quarter, with ${fmt.percent(data.gap.gapPct)} of fees flowing through to patients as out-of-pocket costs.`,
+    signals: [
+      {
+        label: "Benefits paid",
+        value: fmt.currency(latest.totalBenefits),
+        delta: benefitsYoY ? `${benefitsYoY > 0 ? "+" : ""}${fmt.percent(Math.abs(benefitsYoY))} YoY` : undefined,
+        trend: benefitsYoY > 0.005 ? "up" : benefitsYoY < -0.005 ? "down" : "flat",
+        inverse: true,
+      },
+      {
+        label: "Patient gap",
+        value: fmt.percent(data.gap.gapPct),
+        delta: undefined,
+        trend: data.gap.gapPct > 0.18 ? "up" : "flat",
+        inverse: true,
+      },
+      {
+        label: "Fastest growing",
+        value: fastestGrowing ? fastestGrowing.specialty : "–",
+        delta: fastestGrowing ? `+${fmt.percent(fastestGrowing.yoyChange)} YoY` : undefined,
+        trend: "up",
+        inverse: true,
+      },
+    ],
     period: latest.periodLabel,
   }
 
   const exploreView = (
-    <div className="space-y-4">
-      {/* Row 1 — Headline */}
+    <div className="space-y-5">
       <KpiHero headline={headline} />
 
-      {/* Row 2 — KPI strip */}
       <KpiStrip>
-        <KpiTile
-          id="op-benefits"
-          label="Fund benefits paid"
-          rawValue={latest.totalBenefits}
-          format="currency"
+        <KpiTile id="op-benefits" label="Fund benefits paid"
+          rawValue={latest.totalBenefits} format="currency"
           delta={{ value: benefitsYoY }}
-          sparklineValues={benefitsSpark}
-          sparklineLabels={labels}
+          sparklineValues={benefitsSpark} sparklineLabels={labels}
           subtext={`${fmt.percent(Math.abs(benefitsQoQ))} ${benefitsQoQ > 0 ? "increase" : "decrease"} on prior quarter.`}
-          emphasis
-        />
-        <KpiTile
-          id="op-services"
-          label="Total services"
-          rawValue={data.gap.totalServices}
-          format="number"
+          footnote={[prior ? `Prior ${fmt.currency(prior.totalBenefits)}` : "", "QoQ"]}
+          tint="deep" labelIcon="coin" cornerIcon="activity" />
+        <KpiTile id="op-services" label="Total services"
+          rawValue={data.gap.totalServices} format="number"
           subtext="Medical services with fund benefit claims this quarter."
-        />
-        <KpiTile
-          id="op-avg"
-          label="Avg benefit per service"
-          rawValue={data.gap.avgBenefitPerService}
-          format="currency"
+          footnote={[fmt.currency(data.gap.avgBenefitPerService) + " avg", "per service"]}
+          labelIcon="stethoscope" cornerIcon="bar-chart" />
+        <KpiTile id="op-avg" label="Avg benefit per service"
+          rawValue={data.gap.avgBenefitPerService} format="currency"
           subtext="Average fund payment per medical service rendered."
-        />
-        <KpiTile
-          id="op-gap"
-          label="Patient gap"
-          rawValue={data.gap.gapPct * 100}
-          format="pp"
+          footnote={["Fund + Medicare", "combined"]}
+          labelIcon="coin" cornerIcon="trend-up" />
+        <KpiTile id="op-gap" label="Patient gap"
+          rawValue={data.gap.gapPct * 100} format="pp"
           subtext={`${fmt.currency(data.gap.patientOutOfPocket)} out-of-pocket — politically watched metric.`}
-          inverse
-        />
-        <KpiTile
-          id="op-fastest"
-          label="Fastest-growing"
-          rawValue={fastestGrowing.yoyChange * 100}
-          format="pp"
-          subtext={`${fastestGrowing.specialty} — ${fmt.currency(fastestGrowing.benefitsPaid)} paid this quarter.`}
-        />
+          footnote={[fmt.currency(data.gap.patientOutOfPocket), "total OOP"]}
+          inverse tint="cream" labelIcon="alert" cornerIcon="alert" />
+        <KpiTile id="op-fastest" label="Fastest-growing specialty"
+          rawValue={fastestGrowing ? fastestGrowing.yoyChange * 100 : 0} format="pp"
+          subtext={fastestGrowing ? `${fastestGrowing.specialty} — ${fmt.currency(fastestGrowing.benefitsPaid)} paid this quarter.` : ""}
+          footnote={[fastestGrowing?.specialty ?? "", "YoY growth"]}
+          labelIcon="activity" cornerIcon="trend-up" />
       </KpiStrip>
 
-      {/* Row 3 — Specialty treemap (HERO) */}
-      <Card>
-        <SectionHeader
-          title="Benefits paid by specialty"
-          subtitle="Tile size shows volume; colour shows year-on-year change. Largest tile is the dominant cost category."
-        />
-        <div className="flex items-center gap-4 text-caption text-text-secondary mt-3 mb-3">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-positive" /> Stable / declining
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-chart-1" /> Moderate growth
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-warning" /> Elevated growth
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-negative" /> Rapid growth (10%+ YoY)
-          </div>
+      {/* Specialty treemap */}
+      <div className="glass">
+        <SectionHeader eyebrow="Claims" eyebrowIcon="stethoscope"
+          title="Benefits paid by specialty."
+          emphasis="specialty"
+          subtitle="Tile size shows volume; colour shows year-on-year change. Largest tile is the dominant cost category." />
+        <div className="flex flex-wrap items-center gap-4 mt-3 mb-3 font-sans text-[12px]"
+          style={{ color: "var(--color-text-secondary)" }}>
+          {[
+            { label: "Stable / declining", color: "var(--color-positive)" },
+            { label: "Moderate growth", color: "var(--color-chart-1)" },
+            { label: "Elevated growth", color: "var(--color-warning)" },
+            { label: "Rapid growth (10%+ YoY)", color: "var(--color-negative)" },
+          ].map(({ label, color }) => (
+            <div key={label} className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-sm" style={{ background: color }} />
+              {label}
+            </div>
+          ))}
         </div>
         <SpecialtyTreemap specialties={data.specialties.slice(0, 12)} />
-        <p className="text-caption text-text-tertiary mt-4">
+        <p className="font-sans text-[12px] mt-4" style={{ color: "var(--color-text-tertiary)" }}>
           {largest.specialty} dominates spending at {fmt.currency(largest.benefitsPaid)}, reflecting its near-universal involvement in surgical procedures. {fastestGrowing.specialty} is the fastest-growing category at {fmt.percent(fastestGrowing.yoyChange)} year-on-year.
         </p>
-      </Card>
+      </div>
 
-      {/* Row 4 — Gap flow + cost dynamics */}
-      <div className="grid grid-cols-12 gap-3">
-        <Card className="col-span-12 lg:col-span-6">
-          <SectionHeader
-            title="Where the medical fee dollar goes"
-            subtitle="Decomposition of total medical fees this quarter — split across insurance, Medicare, and patient out-of-pocket."
-          />
+      {/* Gap flow + growth rates */}
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-12 lg:col-span-6 glass">
+          <SectionHeader eyebrow="Fee decomposition" eyebrowIcon="coin"
+            title="Where the medical fee dollar goes."
+            emphasis="dollar"
+            subtitle="Split of total medical fees across insurance, Medicare, and patient out-of-pocket." />
           <div className="mt-5">
             <GapFlow
               totalFees={data.gap.totalFees}
@@ -131,126 +149,139 @@ export default async function OperationalPage() {
               patientOutOfPocket={data.gap.patientOutOfPocket}
             />
           </div>
-          <p className="text-caption text-text-tertiary mt-5">
-            Around {fmt.percent(data.gap.gapPct)} of medical fees are paid by patients out-of-pocket — a politically sensitive metric and a key affordability indicator for the industry.
+          <p className="font-sans text-[12px] mt-5" style={{ color: "var(--color-text-tertiary)" }}>
+            Around {fmt.percent(data.gap.gapPct)} of medical fees are paid by patients out-of-pocket — a politically sensitive metric and key affordability indicator.
           </p>
-        </Card>
-
-        <Card className="col-span-12 lg:col-span-6">
-          <SectionHeader
-            title="Top specialty growth rates"
-            subtitle="Year-on-year change in benefits paid, top 6 specialties by spend."
-          />
-          <div className="mt-4 space-y-3">
-  {(() => {
-    const top6 = data.specialties.slice(0, 6)
-    const maxGrowth = Math.max(...top6.map((s) => Math.abs(s.yoyChange))) || 1
-    return top6.map((spec) => {
-      const isPositiveGrowth = spec.yoyChange > 0
-      const intensity = Math.abs(spec.yoyChange) / maxGrowth
-      return (
-        <div key={spec.specialty} className="flex items-center gap-3">
-          <span className="text-body-sm w-44 flex-shrink-0">{spec.specialty}</span>
-          <div className="relative flex-1 h-1 bg-subtle rounded-full">
-            <div
-              className="absolute inset-y-0 rounded-full"
-              style={{
-                background: spec.yoyChange > 0.08
-                  ? "var(--color-warning)"
-                  : "var(--color-chart-1)",
-                width: `${intensity * 100}%`,
-                opacity: 0.7,
-              }}
-            />
-          </div>
-          <span className="text-body-sm tabular w-14 text-right">
-            {isPositiveGrowth ? "+" : ""}
-            {fmt.percent(spec.yoyChange)}
-          </span>
         </div>
-      )
-    })
-  })()}
-</div>
-          <p className="text-caption text-text-tertiary mt-5">
-            Diagnostic and pathology categories show the highest growth — typically driven by demographic shifts and new test types entering the schedule.
+
+        <div className="col-span-12 lg:col-span-6 glass">
+          <SectionHeader eyebrow="Growth" eyebrowIcon="trend-up"
+            title="Top specialty growth rates."
+            emphasis="growth"
+            subtitle="Year-on-year change in benefits paid, top 6 specialties by spend." />
+          <div className="mt-4 space-y-4">
+            {(() => {
+              const top6 = data.specialties.slice(0, 6)
+              const maxGrowth = Math.max(...top6.map((s) => Math.abs(s.yoyChange))) || 1
+              return top6.map((spec) => {
+                const intensity = Math.abs(spec.yoyChange) / maxGrowth
+                const barColor = spec.yoyChange > 0.08
+                  ? "var(--color-warning)"
+                  : spec.yoyChange > 0.05
+                  ? "var(--color-bupa-blue)"
+                  : "var(--color-positive)"
+                return (
+                  <div key={spec.specialty} className="flex items-center gap-3">
+                    <span className="font-sans text-[13px] w-44 flex-shrink-0"
+                      style={{ color: "var(--color-text-primary)" }}>
+                      {spec.specialty}
+                    </span>
+                    <div className="relative flex-1 h-1.5 rounded-full"
+                      style={{ background: "var(--color-subtle)" }}>
+                      <div className="absolute inset-y-0 rounded-full transition-all"
+                        style={{ background: barColor, width: `${intensity * 100}%` }} />
+                    </div>
+                    <span className="font-sans text-[12px] font-semibold tabular w-14 text-right"
+                      style={{ color: spec.yoyChange > 0.08 ? "var(--color-warning)" : "var(--color-text-primary)" }}>
+                      {spec.yoyChange > 0 ? "+" : ""}{fmt.percent(spec.yoyChange)}
+                    </span>
+                  </div>
+                )
+              })
+            })()}
+          </div>
+          <p className="font-sans text-[12px] mt-5" style={{ color: "var(--color-text-tertiary)" }}>
+            Diagnostic and pathology categories show the highest growth — driven by demographic shifts and new test types entering the schedule.
           </p>
-        </Card>
+        </div>
       </div>
 
-      {/* Row 5 — State × specialty heatmap */}
-      <Card>
-        <SectionHeader
-          title="Benefits paid by state and specialty"
-          subtitle="Top 8 specialties × all states. Cell intensity shows benefit volume."
-        />
+      {/* State × specialty heatmap */}
+      <div className="glass">
+        <SectionHeader eyebrow="Geography" eyebrowIcon="activity"
+          title="Benefits by state and specialty."
+          emphasis="state"
+          subtitle="Top 8 specialties × all states. Cell intensity shows benefit volume." />
         <div className="mt-6">
           <StateSpecialtyHeatmap rows={data.heatmap} specialties={data.topSpecialtiesForHeatmap} />
         </div>
-      </Card>
+      </div>
 
-      {/* Row 6 — Detail table */}
-      <Card>
-        <SectionHeader
-          title="All specialties"
+      {/* Detail table */}
+      <div className="glass">
+        <SectionHeader eyebrow="Detail" eyebrowIcon="doc"
+          title="All specialties."
+          emphasis="specialties"
           subtitle="Full breakdown, sorted by benefits paid."
-        />
+          right={
+            <button className="glass-strong inline-flex h-9 items-center gap-2 rounded-full px-4 font-sans text-[12px] font-medium"
+              style={{ color: "var(--color-bupa-navy)" }}>
+              <Icon name="download" size="sm" />Download CSV
+            </button>
+          } />
         <div className="mt-4 overflow-x-auto">
-          <table className="w-full text-body-sm tabular">
+          <table className="w-full font-sans text-[13px] tabular">
             <thead>
-              <tr className="border-b border-border-subtle text-text-secondary text-caption">
-                <th className="text-left font-normal py-2 pr-4">Specialty</th>
-                <th className="text-right font-normal py-2 px-4">Benefits paid</th>
-                <th className="text-right font-normal py-2 px-4">Prior year</th>
-                <th className="text-right font-normal py-2 pl-4">YoY change</th>
+              <tr style={{ color: "var(--color-text-tertiary)", borderBottom: "1px solid var(--color-border-subtle)" }}>
+                {["Specialty", "Benefits paid", "Prior year", "YoY change"].map((h, i) => (
+                  <th key={h} className={`py-3 font-sans text-[11px] font-semibold uppercase tracking-[0.1em] ${i === 0 ? "text-left pr-4" : "text-right px-3"}`}>
+                    {h}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {data.specialties.map((s) => (
-                <tr
-                  key={s.specialty}
-                  className="border-b border-border-subtle last:border-b-0 hover:bg-subtle transition-colors"
-                >
-                  <td className="py-2.5 pr-4">{s.specialty}</td>
-                  <td className="py-2.5 px-4 text-right">{fmt.currency(s.benefitsPaid)}</td>
-                  <td className="py-2.5 px-4 text-right">{fmt.currency(s.priorYearBenefits)}</td>
-                  <td
-                    className={`py-2.5 pl-4 text-right ${s.yoyChange > 0.08 ? "text-warning" : ""}`}
-                  >
-                    {s.yoyChange > 0 ? "+" : ""}
-                    {fmt.percent(s.yoyChange)}
+              {data.specialties.map((s, idx) => (
+                <tr key={s.specialty} className="hover:bg-white/40 transition-colors"
+                  style={{ borderBottom: "0.5px solid var(--color-border-subtle)" }}>
+                  <td className="py-3 pr-4 font-sans text-[13px]"
+                    style={{ color: "var(--color-bupa-navy)", fontWeight: idx === 0 ? 600 : 400 }}>
+                    {idx === 0 && (
+                      <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle"
+                        style={{ background: "var(--color-bupa-blue)" }} />
+                    )}
+                    {s.specialty}
+                  </td>
+                  <td className="py-3 px-3 text-right" style={{ color: "var(--color-text-primary)" }}>
+                    {fmt.currency(s.benefitsPaid)}
+                  </td>
+                  <td className="py-3 px-3 text-right" style={{ color: "var(--color-text-secondary)" }}>
+                    {fmt.currency(s.priorYearBenefits)}
+                  </td>
+                  <td className="py-3 pl-3 text-right">
+                    <span className="font-semibold"
+                      style={{ color: s.yoyChange > 0.08 ? "var(--color-warning)" : s.yoyChange > 0 ? "var(--color-positive)" : "var(--color-negative)" }}>
+                      {s.yoyChange > 0 ? "+" : ""}{fmt.percent(s.yoyChange)}
+                    </span>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </Card>
+      </div>
     </div>
   )
 
   const storyView = (
     <div className="py-8">
-      <div className="text-caption uppercase tracking-wider text-text-tertiary mb-3">
+      <div className="font-sans text-[11px] uppercase tracking-[0.2em] mb-3"
+        style={{ color: "var(--color-text-tertiary)" }}>
         Story · Operational performance
       </div>
-      <h1 className="text-display leading-tight mb-6 max-w-3xl">
+      <h1 className="font-sans font-bold mb-6 max-w-3xl"
+        style={{ fontSize: "clamp(32px, 4vw, 52px)", letterSpacing: "-0.03em", color: "var(--color-bupa-navy)" }}>
         Where the money flows, and the pressure points it reveals.
       </h1>
-      <p className="text-body text-text-secondary leading-relaxed max-w-2xl mb-12">
+      <p className="font-sans leading-relaxed max-w-2xl mb-12"
+        style={{ fontSize: "16px", color: "var(--color-text-secondary)" }}>
         A detailed narrative walkthrough of {latest.periodLabel} claims activity is coming soon.
-        In the meantime, the dashboard view remains fully interactive — toggle Story Mode off
-        in the app bar to explore the data freely.
+        Toggle Story Mode off to explore the data freely.
       </p>
       <NarrativeBeat
         eyebrow="Headline result"
         claim={headline.sentence}
-        body={
-          <p>
-            The detailed breakdown by specialty, state, and gap composition is explored in the standard dashboard view.
-            Toggle Story Mode off in the app bar to return to the full layout.
-          </p>
-        }
+        body={<p>The detailed breakdown by specialty, state, and gap composition is explored in the standard dashboard view.</p>}
         visual={<KpiHero headline={headline} />}
         fullWidth
       />
