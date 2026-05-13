@@ -3,7 +3,7 @@ import { KpiTile } from "@/components/kpi/kpi-tile"
 import { KpiStrip } from "@/components/kpi/kpi-strip"
 import { SectionHeader } from "@/components/layout/section-header"
 import { WatchListCard } from "@/components/layout/watch-list-card"
-import { LayeredAreaChart } from "@/components/charts/layered-area"
+import { RevenueChartPanel } from "@/components/charts/revenue-chart-panel"
 import { Icon } from "@/components/icons/icon-defs"
 import { StoryFrame } from "@/components/story/story-frame"
 import { OverviewStory } from "@/components/story/overview-story"
@@ -11,6 +11,7 @@ import { getFinancialData, getRecentPeriods } from "@/lib/data/loaders"
 import { generateHeadline, generateWatchList } from "@/lib/insights"
 import { fmt } from "@/lib/format"
 import type { Period } from "@/lib/data/schemas"
+import { getPeriodCount } from "@/lib/period-utils"
 
 function subtextFor(
   metric: "net-margin" | "revenue" | "net-profit" | "loss-ratio" | "investment",
@@ -56,14 +57,31 @@ function subtextFor(
   }
 }
 
-export default async function OverviewPage() {
+function PillCell({ value, threshold, inverse = false }: { value: number; threshold: number; inverse?: boolean }) {
+  const above = value > threshold
+  const good = inverse ? !above : above
+  return (
+    <span className="inline-flex items-center rounded-full px-2.5 py-0.5 font-sans text-[11px] font-medium"
+      style={{ background: good ? "var(--color-positive-bg)" : "var(--color-negative-bg)", color: good ? "var(--color-positive)" : "var(--color-negative)" }}>
+      {fmt.percent(value)}
+    </span>
+  )
+}
+
+export default async function OverviewPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ n?: string; view?: string }>
+}) {
+  const { n } = await searchParams
+  const periodCount = getPeriodCount(n)
   const data = await getFinancialData()
-  const recent = await getRecentPeriods(8)
+  const recent = await getRecentPeriods(periodCount)
   const latest = recent.at(-1)!
   const prior = recent.at(-2) ?? null
   const yearAgo = recent.at(-5) ?? null
 
-  const headline = generateHeadline(latest, prior)
+  const headline = generateHeadline(latest, prior, recent)
   const watchList = generateWatchList(data.periods)
 
   const marginSpark = recent.map((p) => (p.netMargin ?? 0) * 100)
@@ -148,14 +166,19 @@ export default async function OverviewPage() {
           </div>
           {watchList.length > 0
             ? watchList.map((item, i) => <WatchListCard key={i} item={item} />)
-            : <div className="glass-strong rounded-[20px] p-5 font-sans text-[14px]" style={{ color: "var(--color-text-secondary)" }}>No items requiring attention this period.</div>}
+            : <div className="glass-strong rounded-[20px] p-5 font-sans text-[14px]"
+                style={{ color: "var(--color-text-secondary)" }}>
+                No items requiring attention this period.
+              </div>}
           {capitalBase && <CapitalCard capitalBase={capitalBase} />}
         </div>
       </div>
 
       <div className="glass" style={{ overflow: "visible" }}>
-        <SectionHeader eyebrow="Detail" eyebrowIcon="doc" title="Quarterly performance."
-          emphasis="performance" subtitle="Industry aggregate, last eight quarters. APRA quarterly statistics."
+        <SectionHeader eyebrow="Detail" eyebrowIcon="doc"
+          title="Quarterly performance."
+          emphasis="performance"
+          subtitle="Industry aggregate, last eight quarters. APRA quarterly statistics."
           right={
             <button className="glass-strong inline-flex h-9 items-center gap-2 rounded-full px-4 font-sans text-[12px] font-medium"
               style={{ color: "var(--color-bupa-navy)" }}>
@@ -177,34 +200,6 @@ export default async function OverviewPage() {
   return <StoryFrame story={storyView} explore={exploreView} />
 }
 
-function RevenueChartPanel({ periods, latest }: { periods: Period[]; latest: Period }) {
-  return (
-    /* overflow visible so SVG foreignObject callouts can escape the panel */
-    <div className="glass" style={{ overflow: "visible" }}>
-      <SectionHeader eyebrow="Revenue and claims" eyebrowIcon="activity"
-        title="Revenue and claims, by quarter." emphasis="and"
-        subtitle="Premium revenue and incurred claims across the last eight quarters. The space between is gross underwriting margin." />
-      <div className="mt-4 flex flex-wrap items-center gap-5 font-sans text-[12px]"
-        style={{ color: "var(--color-text-secondary)" }}>
-        <span className="inline-flex items-center gap-2">
-          <span className="inline-block h-3 w-3 rounded-sm" style={{ background: "var(--color-bupa-navy)" }} />Revenue
-        </span>
-        <span className="inline-flex items-center gap-2">
-          <span className="inline-block h-3 w-3 rounded-sm" style={{ background: "var(--color-bupa-blue)" }} />Incurred claims
-        </span>
-        <span className="inline-flex items-center gap-2">
-          <span className="inline-block h-3 w-3 rounded-sm"
-            style={{ background: "rgba(75,58,154,0.4)", border: "1px solid rgba(75,58,154,0.4)" }} />Underwriting margin
-        </span>
-      </div>
-      {/* No relative wrapper — let the SVG overflow naturally */}
-      <div className="mt-4" style={{ overflow: "visible" }}>
-        <LayeredAreaChart periods={periods} />
-      </div>
-    </div>
-  )
-}
-
 function HealthCard({ lossRatioPp, lossRatioVsAvgPp }: { lossRatioPp: number; lossRatioVsAvgPp: number }) {
   const above = lossRatioVsAvgPp > 0
   return (
@@ -223,13 +218,8 @@ function HealthCard({ lossRatioPp, lossRatioVsAvgPp }: { lossRatioPp: number; lo
             style={{ color: "var(--color-warning)" }}>
             <Icon name="alert" size="sm" />Industry health · This quarter
           </div>
-          <h3
-              className="mt-2 max-w-[680px] font-sans font-bold text-[20px] leading-[1.18] lg:text-[28px]"
-              style={{
-                color: "var(--color-bupa-navy)",
-                letterSpacing: "-0.025em",
-              }}
-            >
+          <h3 className="mt-2 max-w-[680px] font-serif text-[24px] font-light leading-[1.18] lg:text-[28px]"
+            style={{ color: "var(--color-bupa-navy)", letterSpacing: "-0.025em", fontVariationSettings: '"opsz" 144, "SOFT" 30' }}>
             {above ? "Watch: " : "Stable: "}claims are{" "}
             <em className="font-light italic" style={{ color: "var(--color-bupa-blue-deep)" }}>
               {above ? "growing faster than premiums" : "tracking premiums closely"}
@@ -237,7 +227,8 @@ function HealthCard({ lossRatioPp, lossRatioVsAvgPp }: { lossRatioPp: number; lo
           </h3>
           <p className="mt-2 max-w-[680px] font-sans text-[14px] leading-[1.6]"
             style={{ color: "var(--color-text-secondary)" }}>
-            Loss ratio of {lossRatioPp.toFixed(1)}% sits {Math.abs(lossRatioVsAvgPp).toFixed(1)} pp {above ? "above" : "below"} the eight-quarter average.
+            Loss ratio of {lossRatioPp.toFixed(1)}% sits {Math.abs(lossRatioVsAvgPp).toFixed(1)} pp{" "}
+            {above ? "above" : "below"} the eight-quarter average.
             {above ? " Net margin compression has not yet breached the 4.0% action threshold, but continued trend through FY2026 would warrant board-level pricing review." : " Net margin held within historical range."}
           </p>
         </div>
@@ -256,7 +247,7 @@ function HealthCard({ lossRatioPp, lossRatioVsAvgPp }: { lossRatioPp: number; lo
 function CapitalCard({ capitalBase }: { capitalBase: number }) {
   return (
     <button type="button" className="group grid grid-cols-[36px_1fr_auto] items-start gap-3.5 rounded-[20px] p-5 text-left transition-transform hover:-translate-y-[2px]"
-      style={{ background: "linear-gradient(150deg, rgba(0,121,200,0.12), rgba(255,255,255,0.78))", backdropFilter: "blur(24px) saturate(160%)", border: "1px solid rgba(255,255,255,0.92)", boxShadow: "0 8px 24px -12px rgba(10,31,68,0.22)" }}>
+      style={{ background: "linear-gradient(150deg, rgba(0,121,200,0.12), rgba(255,255,255,0.78))", backdropFilter: "blur(24px) saturate(160%)", border: "1px solid rgba(255,255,255,0.92)", boxShadow: "0 8px 24px -12px rgba(0,47,108,0.22)" }}>
       <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl"
         style={{ background: "rgba(0,121,200,0.14)", color: "var(--color-bupa-blue-deep)" }}>
         <Icon name="vault" />
@@ -285,7 +276,7 @@ function QuarterlyTable({ periods }: { periods: Period[] }) {
       <thead>
         <tr style={{ color: "var(--color-text-tertiary)" }}>
           {["Quarter", "Revenue", "Claims", "Loss ratio", "Underwriting", "Net profit", "Net margin", "Capital base"].map((h, i) => (
-            <th key={h} className={`border-b py-3 font-sans text-[11px] font-medium uppercase tracking-[0.12em] ${i === 0 ? "text-left pr-4" : "text-right px-4"}`}
+            <th key={h} className={`border-b py-3 font-sans text-[11px] font-semibold uppercase tracking-[0.1em] ${i === 0 ? "text-left pr-4" : "text-right px-3"}`}
               style={{ borderColor: "var(--color-border-subtle)" }}>{h}</th>
           ))}
         </tr>
@@ -294,37 +285,27 @@ function QuarterlyTable({ periods }: { periods: Period[] }) {
         {rows.map((p) => {
           const isCurrent = p.periodEnd === current?.periodEnd
           return (
-            <tr key={p.periodEnd} className="hover:bg-white/50 transition-colors"
+            <tr key={p.periodEnd} className="hover:bg-white/40 transition-colors"
               style={{ borderBottom: "0.5px solid var(--color-border-subtle)" }}>
-              <td className="py-3 pr-4 font-serif text-[15px]" style={{ color: "var(--color-bupa-navy)" }}>
+              <td className="py-3 pr-4 font-sans text-[13px]"
+                style={{ color: "var(--color-bupa-navy)", fontWeight: isCurrent ? 600 : 400 }}>
                 <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle"
-                  style={{ background: isCurrent ? "var(--color-bupa-blue)" : "rgba(10,31,68,0.18)" }} />
+                  style={{ background: isCurrent ? "var(--color-bupa-blue)" : "rgba(0,47,108,0.18)" }} />
                 {p.periodLabel}
               </td>
-              <td className="py-3 px-4 text-right" style={{ color: "var(--color-bupa-ink-2)" }}>{fmt.currency(p.insuranceRevenue ?? 0)}</td>
-              <td className="py-3 px-4 text-right" style={{ color: "var(--color-bupa-ink-2)" }}>{fmt.currency(p.incurredClaims ?? 0)}</td>
-              <td className="py-3 px-4 text-right">{p.lossRatio !== undefined && <PillCell value={p.lossRatio} threshold={0.85} inverse />}</td>
-              <td className="py-3 px-4 text-right" style={{ color: "var(--color-bupa-ink-2)" }}>
+              <td className="py-3 px-3 text-right" style={{ color: "var(--color-text-primary)" }}>{fmt.currency(p.insuranceRevenue ?? 0)}</td>
+              <td className="py-3 px-3 text-right" style={{ color: "var(--color-text-primary)" }}>{fmt.currency(p.incurredClaims ?? 0)}</td>
+              <td className="py-3 px-3 text-right">{p.lossRatio !== undefined && <PillCell value={p.lossRatio} threshold={0.85} inverse />}</td>
+              <td className="py-3 px-3 text-right" style={{ color: "var(--color-text-secondary)" }}>
                 {p.insuranceServiceResult !== undefined ? fmt.percent(p.insuranceServiceResult / (p.insuranceRevenue ?? 1)) : "–"}
               </td>
-              <td className="py-3 px-4 text-right" style={{ color: "var(--color-bupa-ink-2)" }}>{fmt.currency(p.netProfit ?? 0)}</td>
-              <td className="py-3 px-4 text-right">{p.netMargin !== undefined && <PillCell value={p.netMargin} threshold={0.06} />}</td>
-              <td className="py-3 px-4 text-right" style={{ color: "var(--color-bupa-ink-2)" }}>{p.capitalBase ? fmt.currency(p.capitalBase) : "–"}</td>
+              <td className="py-3 px-3 text-right" style={{ color: "var(--color-text-primary)" }}>{fmt.currency(p.netProfit ?? 0)}</td>
+              <td className="py-3 px-3 text-right">{p.netMargin !== undefined && <PillCell value={p.netMargin} threshold={0.06} />}</td>
+              <td className="py-3 pl-3 text-right" style={{ color: "var(--color-text-secondary)" }}>{p.capitalBase ? fmt.currency(p.capitalBase) : "–"}</td>
             </tr>
           )
         })}
       </tbody>
     </table>
-  )
-}
-
-function PillCell({ value, threshold, inverse = false }: { value: number; threshold: number; inverse?: boolean }) {
-  const above = value > threshold
-  const good = inverse ? !above : above
-  return (
-    <span className="inline-flex items-center rounded-full px-2.5 py-0.5 font-sans text-[11px] font-medium"
-      style={{ background: good ? "var(--color-positive-bg)" : "var(--color-negative-bg)", color: good ? "var(--color-positive)" : "var(--color-negative)" }}>
-      {fmt.percent(value)}
-    </span>
   )
 }

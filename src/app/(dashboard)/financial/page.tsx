@@ -13,6 +13,8 @@ import { buildBulletData, buildProfitComposition, buildRevenueWaterfall } from "
 import { fmt } from "@/lib/format"
 import type { Period } from "@/lib/data/schemas"
 import type { Headline } from "@/lib/insights"
+import { RevenueSankey } from "@/components/charts/revenue-sankey"
+import { getPeriodCount } from "@/lib/period-utils"
 
 function generateFinancialHeadline(latest: Period, prior: Period | null, recent: Period[]): Headline {
   const margin = latest.netMargin ?? 0
@@ -81,9 +83,16 @@ function PillCell({ value, threshold, inverse = false }: { value: number; thresh
   )
 }
 
-export default async function FinancialPage() {
+export default async function FinancialPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ n?: string; view?: string }>
+}) {
+  
+  const { n } = await searchParams
+  const periodCount = getPeriodCount(n)
   const data = await getFinancialData()
-  const recent = await getRecentPeriods(8)
+  const recent = await getRecentPeriods(periodCount)
   const latest = recent.at(-1)!
   const prior = recent.at(-2) ?? null
 
@@ -156,6 +165,35 @@ export default async function FinancialPage() {
           subtitle="Each metric vs the 8-quarter rolling median. Black tick is target; coloured bar is actual." />
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-5">
           {bullets.map((b) => <BulletChart key={b.label} data={b} />)}
+        </div>
+      </div>
+
+      {/* ── Sankey: How premium becomes profit ── */}
+      <div className="glass" style={{ overflow: "visible" }}>
+        <SectionHeader
+          eyebrow="Revenue flow"
+          eyebrowIcon="coin"
+          title="How premium becomes profit."
+          emphasis="profit"
+          subtitle={`Sankey flow of ${latest.periodLabel} revenue — from insurance premium through claims, underwriting, and investment to net profit.`}
+        />
+        <div className="mt-6">
+          <RevenueSankey latest={latest} />
+        </div>
+        <div className="mt-4 flex flex-wrap gap-6 font-sans text-[12px]" style={{ color: "var(--color-text-secondary)" }}>
+          {[
+            { label: "Premium revenue", color: "var(--color-bupa-navy)",  value: fmt.currency(latest.insuranceRevenue ?? 0) },
+            { label: "Incurred claims", color: "var(--color-negative)",   value: fmt.currency(latest.incurredClaims ?? 0) },
+            { label: "Underwriting result", color: "var(--color-bupa-blue)", value: fmt.currency(latest.insuranceServiceResult ?? 0) },
+            { label: "Investment income", color: "var(--color-bupa-teal)", value: fmt.currency(latest.investmentResult ?? 0) },
+            { label: "Net profit",       color: "var(--color-positive)",  value: fmt.currency(latest.netProfit ?? 0) },
+          ].map(({ label, color, value }) => (
+            <div key={label} className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: color }} />
+              <span style={{ color: "var(--color-text-tertiary)" }}>{label}</span>
+              <span className="font-semibold tabular" style={{ color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>{value}</span>
+            </div>
+          ))}
         </div>
       </div>
 

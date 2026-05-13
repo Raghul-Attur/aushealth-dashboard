@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import { Delta } from "./delta"
 import { Sparkline } from "./sparkline"
 import { Icon, type IconName } from "@/components/icons/icon-defs"
+import { AnnotationPopover } from "@/components/layout/annotation-popover"
 import { useCountUp } from "@/hooks/use-count-up"
 import { fmt } from "@/lib/format"
 import { revealVariants, revealTransition } from "@/lib/motion"
@@ -32,7 +33,6 @@ const formatters = {
   pp:       (n: number) => `${n.toFixed(2)}%`,
 }
 
-// Heavy grotesque — matches the reference screenshot
 const numStyle = (size: "hero" | "standard"): React.CSSProperties => ({
   fontFamily: "var(--font-sans)",
   fontSize: size === "hero" ? "clamp(40px, 4.5vw, 68px)" : "clamp(24px, 2.8vw, 44px)",
@@ -50,14 +50,7 @@ export function KpiTile({
   const animated = useCountUp({ id, to: rawValue, duration: 700 })
   const displayValue = formatters[format](animated)
 
-  // Determine sparkline semantic colour
-  const sparkColor = tint === "deep"
-    ? undefined  // handled via dark prop
-    : inverse
-      ? undefined  // sparkline will use trend logic with inverse
-      : undefined
-
-  // ── Deep navy ───────────────────────────────────────────────────────────
+  // ── Deep navy ────────────────────────────────────────────────────────────
   if (tint === "deep") {
     return (
       <motion.div variants={revealVariants} transition={revealTransition}
@@ -70,16 +63,18 @@ export function KpiTile({
               {label}{sublabel && <span className="ml-1 opacity-60">· {sublabel}</span>}
             </div>
           </div>
-          {cornerIcon && (
-            <div className="p-1.5 rounded-[10px] flex-shrink-0"
-              style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.6)" }}>
-              <Icon name={cornerIcon} size="sm" />
-            </div>
-          )}
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <AnnotationPopover tileId={id} tileLabel={label} />
+            {cornerIcon && (
+              <div className="p-1.5 rounded-[10px]"
+                style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.6)" }}>
+                <Icon name={cornerIcon} size="sm" />
+              </div>
+            )}
+          </div>
         </div>
 
         <div style={{ ...numStyle("hero"), color: "#ffffff" }}>{displayValue}</div>
-
         {delta && <Delta value={delta.value} unit={delta.unit} inverse={delta.inverse} pill dark />}
 
         {sparklineValues && sparklineValues.length >= 2 && (
@@ -87,13 +82,9 @@ export function KpiTile({
             <Sparkline values={sparklineValues} labels={sparklineLabels} inverse={inverse} dark static width={200} height={36} />
           </div>
         )}
-
         {subtext && (
-          <p className="font-sans text-[12px] leading-snug" style={{ color: "rgba(255,255,255,0.6)" }}>
-            {subtext}
-          </p>
+          <p className="font-sans text-[12px] leading-snug" style={{ color: "rgba(255,255,255,0.6)" }}>{subtext}</p>
         )}
-
         {footnote && (footnote[0] || footnote[1]) && (
           <div className="mt-auto flex items-center justify-between font-sans text-[11px]"
             style={{ color: "rgba(255,255,255,0.4)" }}>
@@ -105,7 +96,7 @@ export function KpiTile({
     )
   }
 
-  // ── Cream ────────────────────────────────────────────────────────────────
+  // ── Cream ─────────────────────────────────────────────────────────────────
   if (tint === "cream") {
     return (
       <motion.div variants={revealVariants} transition={revealTransition}
@@ -116,16 +107,18 @@ export function KpiTile({
             <div className="font-sans text-[10px] font-semibold uppercase tracking-[0.14em]"
               style={{ color: "var(--color-text-tertiary)" }}>{label}</div>
           </div>
-          {cornerIcon && (
-            <div className="p-1.5 rounded-[10px] flex-shrink-0"
-              style={{ background: "rgba(193,154,75,0.18)", border: "1px solid rgba(193,154,75,0.25)", color: "#6e4f15" }}>
-              <Icon name={cornerIcon} size="sm" />
-            </div>
-          )}
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <AnnotationPopover tileId={id} tileLabel={label} />
+            {cornerIcon && (
+              <div className="p-1.5 rounded-[10px]"
+                style={{ background: "rgba(193,154,75,0.18)", border: "1px solid rgba(193,154,75,0.25)", color: "#6e4f15" }}>
+                <Icon name={cornerIcon} size="sm" />
+              </div>
+            )}
+          </div>
         </div>
 
         <div style={{ ...numStyle("standard"), color: "var(--color-bupa-navy)" }}>{displayValue}</div>
-
         {delta && <Delta value={delta.value} unit={delta.unit} inverse={delta.inverse} pill />}
 
         {sparklineValues && sparklineValues.length >= 2 && (
@@ -133,13 +126,9 @@ export function KpiTile({
             <Sparkline values={sparklineValues} labels={sparklineLabels} inverse={inverse} static width={200} height={36} />
           </div>
         )}
-
         {subtext && (
-          <p className="font-sans text-[12px] leading-snug" style={{ color: "var(--color-text-secondary)" }}>
-            {subtext}
-          </p>
+          <p className="font-sans text-[12px] leading-snug" style={{ color: "var(--color-text-secondary)" }}>{subtext}</p>
         )}
-
         {footnote && (footnote[0] || footnote[1]) && (
           <div className="mt-auto flex items-center justify-between font-sans text-[11px]"
             style={{ color: "var(--color-text-tertiary)" }}>
@@ -151,7 +140,7 @@ export function KpiTile({
     )
   }
 
-  // ── Standard glass ───────────────────────────────────────────────────────
+  // ── Standard glass ─────────────────────────────────────────────────────────
   return (
     <motion.div variants={revealVariants} transition={revealTransition}
       className="glass flex flex-col gap-3" style={{ minHeight: "220px" }}>
@@ -161,16 +150,18 @@ export function KpiTile({
           <div className="font-sans text-[10px] font-semibold uppercase tracking-[0.14em]"
             style={{ color: "var(--color-text-tertiary)" }}>{label}</div>
         </div>
-        {cornerIcon && (
-          <div className="p-1.5 rounded-[10px] flex-shrink-0"
-            style={{ background: "rgba(0,121,200,0.09)", border: "1px solid rgba(0,121,200,0.14)", color: "var(--color-bupa-blue-deep)" }}>
-            <Icon name={cornerIcon} size="sm" />
-          </div>
-        )}
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          <AnnotationPopover tileId={id} tileLabel={label} />
+          {cornerIcon && (
+            <div className="p-1.5 rounded-[10px]"
+              style={{ background: "rgba(0,121,200,0.09)", border: "1px solid rgba(0,121,200,0.14)", color: "var(--color-bupa-blue-deep)" }}>
+              <Icon name={cornerIcon} size="sm" />
+            </div>
+          )}
+        </div>
       </div>
 
       <div style={{ ...numStyle("standard"), color: "var(--color-bupa-navy)" }}>{displayValue}</div>
-
       {delta && <Delta value={delta.value} unit={delta.unit} inverse={delta.inverse} pill />}
 
       {sparklineValues && sparklineValues.length >= 2 && (
@@ -178,13 +169,9 @@ export function KpiTile({
           <Sparkline values={sparklineValues} labels={sparklineLabels} inverse={inverse} static width={200} height={36} />
         </div>
       )}
-
       {subtext && (
-        <p className="font-sans text-[12px] leading-snug" style={{ color: "var(--color-text-secondary)" }}>
-          {subtext}
-        </p>
+        <p className="font-sans text-[12px] leading-snug" style={{ color: "var(--color-text-secondary)" }}>{subtext}</p>
       )}
-
       {footnote && (footnote[0] || footnote[1]) && (
         <div className="mt-auto flex items-center justify-between font-sans text-[11px]"
           style={{ color: "var(--color-text-tertiary)" }}>

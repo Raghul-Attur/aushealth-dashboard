@@ -5,6 +5,8 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Icon } from "@/components/icons/icon-defs"
 import { StoryModeToggle } from "./story-mode-toggle"
+import { ShareButton } from "./share-button"
+import { PeriodSelector } from "./period-selector"
 
 const tabs = [
   { href: "/overview",    label: "Overview",    icon: "activity" as const },
@@ -20,13 +22,12 @@ export function AppBar() {
     <header
       className="relative z-40 sticky top-0"
       style={{
-        background: "rgba(238,243,248,0.75)",
-        backdropFilter: "blur(20px) saturate(180%)",
-        borderBottom: "1px solid rgba(0,47,108,0.06)",
+        background: "rgba(238, 243, 248, 0)",
+        borderBottom: "1px solid rgba(0, 47, 108, 0)",
       }}
     >
       <div className="mx-auto max-w-[1440px] px-10 h-14 flex items-center justify-between gap-6">
-        {/* Brand mark only — no "Group performance" text */}
+        {/* Brand */}
         <div className="flex items-center gap-2.5 flex-shrink-0">
           <div
             className="w-7 h-7 rounded-full relative flex-shrink-0"
@@ -35,32 +36,31 @@ export function AppBar() {
               boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.55), 0 6px 16px rgba(0,85,142,0.3)",
             }}
           >
-            <span className="absolute inset-0 flex items-center justify-center font-sans font-bold text-white" style={{ fontSize: "16px" }}>+</span>
+            <span className="absolute inset-0 flex items-center justify-center font-sans font-bold text-white"
+              style={{ fontSize: "16px" }}>+</span>
           </div>
-          <strong className="font-sans font-semibold tracking-[0.18em] uppercase text-[13px]" style={{ color: "var(--color-bupa-navy)" }}>
+          <strong className="font-sans font-semibold tracking-[0.18em] uppercase text-[13px]"
+            style={{ color: "var(--color-bupa-navy)" }}>
             AusHealth
           </strong>
         </div>
 
-        {/* Pill nav — no Risk & Capital */}
+        {/* Pill nav */}
         <nav className="flex items-center gap-1">
           {tabs.map((tab) => {
             const active = pathname === tab.href || pathname.startsWith(tab.href + "/")
             return (
-              <Link
-                key={tab.href}
-                href={tab.href}
+              <Link key={tab.href} href={tab.href}
                 className="inline-flex items-center gap-1.5 font-sans text-[13px] font-medium transition-all"
                 style={{
-                  padding: "7px 14px",
-                  borderRadius: "999px",
+                  padding: "7px 14px", borderRadius: "999px",
                   color: active ? "#fff" : "var(--color-text-secondary)",
                   background: active ? "var(--color-bupa-navy)" : "transparent",
-                  boxShadow: active ? "0 8px 20px -8px rgba(10,31,68,0.5)" : "none",
+                  boxShadow: active ? "0 8px 20px -8px rgba(0,47,108,0.5)" : "none",
                   textDecoration: "none",
-                }}
-              >
-                <Icon name={tab.icon} size="sm" style={{ color: active ? "#fff" : "var(--color-text-tertiary)" }} />
+                }}>
+                <Icon name={tab.icon} size="sm"
+                  style={{ color: active ? "#fff" : "var(--color-text-tertiary)" }} />
                 {tab.label}
               </Link>
             )
@@ -69,56 +69,35 @@ export function AppBar() {
 
         {/* Right controls */}
         <div className="flex items-center gap-2 flex-shrink-0">
-          {/* Quarter pill */}
-          <div
-            className="inline-flex items-center gap-2 font-sans text-[12px] font-medium"
-            style={{
-              background: "rgba(255,255,255,0.84)",
-              border: "1px solid rgba(255,255,255,0.92)",
-              borderRadius: "999px",
-              padding: "7px 14px",
-              color: "var(--color-bupa-ink)",
-              boxShadow: "0 4px 14px -6px rgba(10,31,68,0.22)",
-              backdropFilter: "blur(20px)",
-            }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-bupa-blue)", boxShadow: "0 0 0 3px rgba(0,121,200,0.18)" }} />
-            Q2 FY2026 · Industry aggregate
-          </div>
+          {/* Period selector — replaces static quarter pill */}
+          <PeriodSelector />
 
-          {/* Story mode — visible on warm bg */}
+          <ShareButton />
           <StoryModeToggle />
 
-          {/* Search + Bell */}
           {[Search, Bell].map((Comp, i) => (
-            <button
-              key={i}
-              type="button"
+            <button key={i} type="button"
               className="inline-flex items-center justify-center"
               style={{
                 width: "34px", height: "34px", borderRadius: "50%",
                 background: "rgba(255,255,255,0.84)",
-                border: "1px solid rgba(255,255,255,0.92)",
+                border: "1px solid rgba(0,47,108,0.08)",
                 color: "var(--color-bupa-navy)",
-                boxShadow: "0 4px 14px -6px rgba(10,31,68,0.22)",
+                boxShadow: "0 4px 14px -6px rgba(0,47,108,0.18)",
                 backdropFilter: "blur(20px)",
                 cursor: "pointer",
-              }}
-            >
+              }}>
               <Comp size={15} strokeWidth={1.75} />
             </button>
           ))}
 
-          {/* Avatar */}
-          <div
-            className="inline-flex items-center justify-center font-sans text-[12px] font-semibold text-white"
+          <div className="inline-flex items-center justify-center font-sans text-[12px] font-semibold text-white"
             style={{
               width: "34px", height: "34px", borderRadius: "50%",
               background: "linear-gradient(135deg, var(--color-bupa-navy), var(--color-bupa-blue))",
               border: "2px solid rgba(255,255,255,0.9)",
-              boxShadow: "0 4px 14px -4px rgba(10,31,68,0.4)",
-            }}
-          >
+              boxShadow: "0 4px 14px -4px rgba(0,47,108,0.4)",
+            }}>
             RS
           </div>
         </div>
