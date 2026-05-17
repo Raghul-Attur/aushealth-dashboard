@@ -16,7 +16,9 @@ import type { Headline } from "@/lib/insights"
 import { RevenueSankey } from "@/components/charts/revenue-sankey"
 import { getPeriodCount } from "@/lib/period-utils"
 
+
 function generateFinancialHeadline(latest: Period, prior: Period | null, recent: Period[]): Headline {
+  
   const margin = latest.netMargin ?? 0
   const lossRatio = latest.lossRatio ?? 0
   const priorMargin = prior?.netMargin ?? margin
@@ -86,7 +88,7 @@ function PillCell({ value, threshold, inverse = false }: { value: number; thresh
 export default async function FinancialPage({
   searchParams,
 }: {
-  searchParams: Promise<{ n?: string; view?: string }>
+  searchParams: Promise<{ n?: string }>
 }) {
   
   const { n } = await searchParams

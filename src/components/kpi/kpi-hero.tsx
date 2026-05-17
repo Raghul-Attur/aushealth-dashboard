@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { useQueryState, parseAsString } from "nuqs"
 import { Icon } from "@/components/icons/icon-defs"
 import { BriefingDrawer } from "@/components/shell/briefing-drawer"
 import type { Headline } from "@/lib/insights"
@@ -29,6 +30,8 @@ const avatars = [
 
 export function KpiHero({ headline }: { headline: Headline }) {
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [compare, setCompare] = useQueryState("compare", parseAsString.withDefault(""))
+  const compareActive = compare === "true"
   const tone = statusTone[headline.status]
 
   // Generate briefing beats from headline signals
@@ -75,7 +78,7 @@ export function KpiHero({ headline }: { headline: Headline }) {
         transition={{ duration: duration.reveal, ease: easing.product }}
         className="glass"
       >
-        <div className="grid items-start gap-10 lg:grid-cols-[1fr_280px]">
+        <div className="grid items-start gap-6 lg:gap-10 lg:grid-cols-[1fr_280px]">
           {/* ── Left ── */}
           <div className="min-w-0">
             <div className="inline-flex items-center gap-2 font-sans text-[11px] font-semibold uppercase tracking-[0.2em]"
@@ -86,7 +89,7 @@ export function KpiHero({ headline }: { headline: Headline }) {
 
             <h1 className="mt-3 font-sans"
               style={{
-                fontSize: "clamp(38px, 5.5vw, 76px)",
+                fontSize: "clamp(28px, 5.5vw, 76px)",
                 fontWeight: 800,
                 lineHeight: 0.96,
                 letterSpacing: "-0.03em",
@@ -106,7 +109,7 @@ export function KpiHero({ headline }: { headline: Headline }) {
             </p>
 
             {/* Signal strip */}
-            <div className="mt-5 flex flex-wrap items-center gap-2">
+            <div className="mt-4 flex flex-wrap items-center gap-2">
               {headline.signals.map((sig, i) => {
                 const isGood = sig.inverse ? sig.trend === "down" : sig.trend === "up"
                 const isBad  = sig.inverse ? sig.trend === "up"  : sig.trend === "down"
@@ -118,18 +121,18 @@ export function KpiHero({ headline }: { headline: Headline }) {
                       background: "rgba(0,47,108,0.05)",
                       border: "1px solid rgba(0,47,108,0.08)",
                       borderRadius: "999px",
-                      padding: "6px 14px",
+                      padding: "5px 12px",
                     }}>
-                    <span className="text-[11px] font-medium uppercase tracking-[0.1em]"
+                    <span className="text-[10px] font-medium uppercase tracking-[0.1em]"
                       style={{ color: "var(--color-text-tertiary)" }}>{sig.label}</span>
-                    <span className="text-[13px] font-bold tabular"
+                    <span className="text-[12px] font-bold tabular"
                       style={{ color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>
                       {sig.value}
                     </span>
                     {sig.delta && (
-                      <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold"
+                      <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold"
                         style={{ color: trendColour }}>
-                        <TrendIcon size={11} strokeWidth={2.5} />
+                        <TrendIcon size={10} strokeWidth={2.5} />
                         {sig.delta}
                       </span>
                     )}
@@ -139,14 +142,14 @@ export function KpiHero({ headline }: { headline: Headline }) {
             </div>
 
             {/* CTAs */}
-            <div className="mt-6 flex items-center gap-3">
+            <div className="mt-5 flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={() => setDrawerOpen(true)}
                 className="inline-flex items-center gap-2.5 font-sans text-[13px] font-semibold text-white transition-opacity hover:opacity-90"
                 style={{
                   background: "var(--color-bupa-navy)",
-                  padding: "0 22px", height: "44px", borderRadius: "999px",
+                  padding: "0 20px", height: "42px", borderRadius: "999px",
                   boxShadow: "0 8px 24px -8px rgba(0,47,108,0.5), inset 0 1px 0 rgba(255,255,255,0.18)",
                 }}>
                 Open quarterly briefing
@@ -156,21 +159,23 @@ export function KpiHero({ headline }: { headline: Headline }) {
                 </span>
               </button>
               <button type="button"
-                className="inline-flex items-center gap-2 font-sans text-[13px] font-medium transition-colors hover:bg-white/60"
+                onClick={() => setCompare(compareActive ? "" : "true")}
+                className="inline-flex items-center gap-2 font-sans text-[13px] font-medium transition-all"
                 style={{
-                  background: "rgba(255,255,255,0.84)", color: "var(--color-bupa-navy)",
-                  padding: "0 18px", height: "44px", borderRadius: "999px",
-                  border: "1px solid rgba(0,47,108,0.12)",
-                  boxShadow: "0 4px 14px -6px rgba(0,47,108,0.18)",
+                  background: compareActive ? "var(--color-bupa-blue)" : "rgba(255,255,255,0.84)",
+                  color: compareActive ? "#fff" : "var(--color-bupa-navy)",
+                  padding: "0 18px", height: "42px", borderRadius: "999px",
+                  border: compareActive ? "none" : "1px solid rgba(0,47,108,0.12)",
+                  boxShadow: compareActive ? "0 8px 20px -8px rgba(0,121,200,0.5)" : "0 4px 14px -6px rgba(0,47,108,0.18)",
                 }}>
                 <Icon name="eye-open" size="sm" />
-                Compare vs prior year
+                {compareActive ? "Comparing vs prior year" : "Compare vs prior year"}
               </button>
             </div>
           </div>
 
-          {/* ── Right ── */}
-          <div className="flex flex-col items-end gap-4 pt-2 flex-shrink-0" style={{ minWidth: "280px" }}>
+          {/* ── Right — hidden on mobile ── */}
+          <div className="hidden lg:flex flex-col items-end gap-4 pt-2 flex-shrink-0" style={{ minWidth: "280px" }}>
             <div className="inline-flex items-center gap-3 whitespace-nowrap"
               style={{
                 background: "rgba(255,255,255,0.84)",

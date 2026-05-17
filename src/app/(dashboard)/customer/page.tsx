@@ -11,6 +11,7 @@ import { Icon } from "@/components/icons/icon-defs"
 import { getCoverageData } from "@/lib/data/loaders"
 import { fmt } from "@/lib/format"
 import type { Headline } from "@/lib/insights"
+import { AustraliaMap } from "@/components/charts/australia-map"
 
 function PillCell({ value, threshold, inverse = false }: { value: number; threshold: number; inverse?: boolean }) {
   const above = value > threshold
@@ -126,20 +127,20 @@ export default async function CustomerPage() {
 
       {/* Coverage by state + age pyramid */}
       <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-12 lg:col-span-5 glass">
+        <div className="col-span-12 lg:col-span-6 glass" style={{ overflow: "visible" }}>
           <SectionHeader eyebrow="Geography" eyebrowIcon="activity"
             title="Coverage by state."
             emphasis="state"
             subtitle="Hospital cover penetration as a share of state population, ranked highest to lowest." />
           <div className="mt-4">
-            <StateCoverageList states={data.states} metric="htCoverage" />
+            <AustraliaMap states={data.states} metric="htCoverage" />
           </div>
           <p className="font-sans text-[12px] mt-4" style={{ color: "var(--color-text-tertiary)" }}>
             ACT, NSW and QLD lead the country. NT lags significantly — a structural pattern across the dataset.
           </p>
         </div>
 
-        <div className="col-span-12 lg:col-span-7 glass">
+        <div className="col-span-12 lg:col-span-6 glass">
           <SectionHeader eyebrow="Demographics" eyebrowIcon="eye-open"
             title="Member age distribution."
             emphasis="age"

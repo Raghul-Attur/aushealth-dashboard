@@ -10,7 +10,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <AppBar />
 
       <main className="relative z-10 flex-1">
-        <div className="mx-auto max-w-[1440px] px-10 py-8">
+        <div className="mx-auto max-w-[1440px] px-4 py-5 md:px-6 md:py-6 lg:px-10 lg:py-8">
           {children}
         </div>
       </main>

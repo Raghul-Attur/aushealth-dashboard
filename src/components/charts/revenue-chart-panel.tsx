@@ -1,6 +1,6 @@
 "use client"
 
-import { useQueryState, parseAsStringEnum } from "nuqs"
+import { useQueryState, parseAsStringEnum, parseAsString } from "nuqs"
 import { LayeredAreaChart, type ViewMode } from "@/components/charts/layered-area"
 import { SectionHeader } from "@/components/layout/section-header"
 import type { Period } from "@/lib/data/schemas"
@@ -14,8 +14,13 @@ const views: { key: ViewMode; label: string }[] = [
 export function RevenueChartPanel({ periods, latest }: { periods: Period[]; latest: Period }) {
   const [view, setView] = useQueryState(
     "view",
-    parseAsStringEnum<ViewMode>(["quarterly", "ttm", "yoy"]).withDefault("quarterly")
+    parseAsStringEnum<ViewMode>(["quarterly", "ttm", "yoy"])
+      .withDefault("quarterly")
+      .withOptions({ shallow: false })
   )
+
+  const [compare] = useQueryState("compare", parseAsString.withDefault(""))
+  const showPriorYear = compare === "true"
 
   return (
     <div className="glass" style={{ overflow: "visible" }}>
@@ -63,6 +68,12 @@ export function RevenueChartPanel({ periods, latest }: { periods: Period[]; late
             Underwriting margin
           </span>
         )}
+        {showPriorYear && view !== "yoy" && (
+          <span className="inline-flex items-center gap-2">
+            <span className="inline-block h-3 w-2 rounded-sm" style={{ background: "rgba(0,47,108,0.35)", borderTop: "2px dashed var(--color-bupa-navy)" }} />
+            Prior year (dashed)
+          </span>
+        )}
         {view === "ttm" && (
           <span className="font-sans text-[11px] px-2 py-0.5 rounded-full"
             style={{ background: "var(--color-bupa-teal-light)", color: "var(--color-bupa-blue-deep)" }}>
@@ -78,7 +89,7 @@ export function RevenueChartPanel({ periods, latest }: { periods: Period[]; late
       </div>
 
       <div className="mt-4" style={{ overflow: "visible" }}>
-        <LayeredAreaChart periods={periods} view={view} />
+        <LayeredAreaChart periods={periods} view={view} showPriorYear={showPriorYear} />
       </div>
     </div>
   )
