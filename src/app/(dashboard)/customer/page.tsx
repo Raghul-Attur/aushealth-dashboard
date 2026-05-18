@@ -128,9 +128,9 @@ export default async function CustomerPage() {
       {/* Coverage by state + age pyramid */}
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-12 lg:col-span-6 glass" style={{ overflow: "visible" }}>
-          <SectionHeader eyebrow="Geography" eyebrowIcon="activity"
+          <SectionHeader
             title="Coverage by state."
-            emphasis="state"
+           
             subtitle="Hospital cover penetration as a share of state population, ranked highest to lowest." />
           <div className="mt-4">
             <AustraliaMap states={data.states} metric="htCoverage" />
@@ -141,9 +141,9 @@ export default async function CustomerPage() {
         </div>
 
         <div className="col-span-12 lg:col-span-6 glass">
-          <SectionHeader eyebrow="Demographics" eyebrowIcon="eye-open"
+          <SectionHeader
             title="Member age distribution."
-            emphasis="age"
+           
             subtitle="Hospital-insured persons by age band and gender. Hover any band to see counts." />
           <div className="mt-2">
             <PopulationPyramid data={data.agePyramid} />
@@ -156,9 +156,9 @@ export default async function CustomerPage() {
 
       {/* Segment bars */}
       <div className="glass">
-        <SectionHeader eyebrow="Life stage" eyebrowIcon="bar-chart"
+        <SectionHeader
           title="Membership by life stage."
-          emphasis="life stage"
+         
           subtitle="Member counts, retention rate and net new this quarter, segmented by age cohort." />
         <div className="mt-5">
           <SegmentBars segments={data.segments} />
@@ -170,9 +170,9 @@ export default async function CustomerPage() {
 
       {/* State detail table */}
       <div className="glass">
-        <SectionHeader eyebrow="Detail" eyebrowIcon="doc"
+        <SectionHeader
           title="State-level detail."
-          emphasis="detail"
+         
           subtitle="All states, both cover types, ordered by total population."
           right={
             <button className="glass-strong inline-flex h-9 items-center gap-2 rounded-full px-4 font-sans text-[12px] font-medium"
@@ -227,7 +227,7 @@ export default async function CustomerPage() {
         Toggle Story Mode off to explore the data freely.
       </p>
       <NarrativeBeat
-        eyebrow="Headline result"
+       
         claim={headline.sentence}
         body={<p>The detailed breakdown by state, age, and life-stage segment is explored in the standard dashboard view.</p>}
         visual={<KpiHero headline={headline} />}

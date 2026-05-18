@@ -48,7 +48,7 @@ export function WatchListCard({ item }: { item: WatchItem & { severity: string }
     >
       <span
         className={cn("inline-flex h-9 w-9 items-center justify-center rounded-xl flex-shrink-0", t.iconWrap)}
-        style={item.severity === "capital" ? { background: "rgba(0,121,200,0.14)" } : undefined}
+        style={item.severity === ("capital" as string) ? { background: "rgba(0,121,200,0.14)" } : undefined}
         aria-hidden
       >
         <Icon name={t.icon} />

@@ -110,9 +110,9 @@ export default async function OperationalPage() {
 
       {/* Specialty treemap */}
       <div className="glass">
-        <SectionHeader eyebrow="Claims" eyebrowIcon="stethoscope"
+        <SectionHeader
           title="Benefits paid by specialty."
-          emphasis="specialty"
+         
           subtitle="Tile size shows volume; colour shows year-on-year change. Largest tile is the dominant cost category." />
         <div className="flex flex-wrap items-center gap-4 mt-3 mb-3 font-sans text-[12px]"
           style={{ color: "var(--color-text-secondary)" }}>
@@ -137,9 +137,9 @@ export default async function OperationalPage() {
       {/* Gap flow + growth rates */}
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-12 lg:col-span-6 glass">
-          <SectionHeader eyebrow="Fee decomposition" eyebrowIcon="coin"
+          <SectionHeader
             title="Where the medical fee dollar goes."
-            emphasis="dollar"
+           
             subtitle="Split of total medical fees across insurance, Medicare, and patient out-of-pocket." />
           <div className="mt-5">
             <GapFlow
@@ -155,9 +155,9 @@ export default async function OperationalPage() {
         </div>
 
         <div className="col-span-12 lg:col-span-6 glass">
-          <SectionHeader eyebrow="Growth" eyebrowIcon="trend-up"
+          <SectionHeader
             title="Top specialty growth rates."
-            emphasis="growth"
+           
             subtitle="Year-on-year change in benefits paid, top 6 specialties by spend." />
           <div className="mt-4 space-y-4">
             {(() => {
@@ -198,9 +198,9 @@ export default async function OperationalPage() {
 
       {/* State × specialty heatmap */}
       <div className="glass">
-        <SectionHeader eyebrow="Geography" eyebrowIcon="activity"
+        <SectionHeader
           title="Benefits by state and specialty."
-          emphasis="state"
+         
           subtitle="Top 8 specialties × all states. Cell intensity shows benefit volume." />
         <div className="mt-6">
           <StateSpecialtyHeatmap rows={data.heatmap} specialties={data.topSpecialtiesForHeatmap} />
@@ -209,9 +209,9 @@ export default async function OperationalPage() {
 
       {/* Detail table */}
       <div className="glass">
-        <SectionHeader eyebrow="Detail" eyebrowIcon="doc"
+        <SectionHeader
           title="All specialties."
-          emphasis="specialties"
+         
           subtitle="Full breakdown, sorted by benefits paid."
           right={
             <button className="glass-strong inline-flex h-9 items-center gap-2 rounded-full px-4 font-sans text-[12px] font-medium"
@@ -279,7 +279,7 @@ export default async function OperationalPage() {
         Toggle Story Mode off to explore the data freely.
       </p>
       <NarrativeBeat
-        eyebrow="Headline result"
+       
         claim={headline.sentence}
         body={<p>The detailed breakdown by specialty, state, and gap composition is explored in the standard dashboard view.</p>}
         visual={<KpiHero headline={headline} />}

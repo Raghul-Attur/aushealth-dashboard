@@ -161,9 +161,9 @@ export default async function FinancialPage({
 
       {/* Performance vs target */}
       <div className="glass">
-        <SectionHeader eyebrow="Performance" eyebrowIcon="activity"
+        <SectionHeader
           title="Performance against target."
-          emphasis="against"
+         
           subtitle="Each metric vs the 8-quarter rolling median. Black tick is target; coloured bar is actual." />
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-5">
           {bullets.map((b) => <BulletChart key={b.label} data={b} />)}
@@ -173,10 +173,10 @@ export default async function FinancialPage({
       {/* ── Sankey: How premium becomes profit ── */}
       <div className="glass" style={{ overflow: "visible" }}>
         <SectionHeader
-          eyebrow="Revenue flow"
-          eyebrowIcon="coin"
+         
+         
           title="How premium becomes profit."
-          emphasis="profit"
+         
           subtitle={`Sankey flow of ${latest.periodLabel} revenue — from insurance premium through claims, underwriting, and investment to net profit.`}
         />
         <div className="mt-6">
@@ -202,9 +202,9 @@ export default async function FinancialPage({
       {/* Waterfall + profit composition */}
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-12 lg:col-span-8 glass" style={{ overflow: "visible" }}>
-          <SectionHeader eyebrow="Revenue" eyebrowIcon="coin"
+          <SectionHeader
             title="Revenue decomposition."
-            emphasis="decomposition"
+           
             subtitle={`Period-over-period change in insurance revenue, ${prior?.periodLabel ?? ""} to ${latest.periodLabel}.`} />
           <WaterfallChart steps={waterfall} />
           <p className="font-sans text-[11px] mt-3" style={{ color: "var(--color-text-tertiary)" }}>
@@ -213,9 +213,9 @@ export default async function FinancialPage({
         </div>
 
         <div className="col-span-12 lg:col-span-4 glass">
-          <SectionHeader eyebrow="Composition" eyebrowIcon="bar-chart"
+          <SectionHeader
             title="Profit composition."
-            emphasis="composition"
+           
             subtitle="Underwriting vs investment result, post-tax estimate." />
           <div className="flex items-center gap-4 mt-3 mb-2 font-sans text-[12px]"
             style={{ color: "var(--color-text-secondary)" }}>
@@ -234,9 +234,9 @@ export default async function FinancialPage({
 
       {/* Detail table */}
       <div className="glass">
-        <SectionHeader eyebrow="Detail" eyebrowIcon="doc"
+        <SectionHeader
           title="Quarterly financials."
-          emphasis="financials"
+         
           subtitle="Industry aggregate, last eight quarters."
           right={
             <button className="glass-strong inline-flex h-9 items-center gap-2 rounded-full px-4 font-sans text-[12px] font-medium"
@@ -299,7 +299,7 @@ export default async function FinancialPage({
         Toggle Story Mode off to explore the data freely.
       </p>
       <NarrativeBeat
-        eyebrow="Headline result"
+       
         claim={headline.sentence}
         body={<p>The detailed numbers behind this result are explored in the standard dashboard view.</p>}
         visual={<KpiHero headline={headline} />}

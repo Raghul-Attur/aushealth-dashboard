@@ -8,6 +8,7 @@ import { Icon } from "@/components/icons/icon-defs"
 import { StoryModeToggle } from "./story-mode-toggle"
 import { ShareButton } from "./share-button"
 import { PeriodSelector } from "./period-selector"
+import { SearchOverlay } from "./search-overlay"
 
 const tabs = [
   { href: "/overview",    label: "Overview",    icon: "activity" as const },
@@ -20,6 +21,7 @@ export function AppBar() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const activeTab = tabs.find(t => pathname.startsWith(t.href)) ?? tabs[0]
+  const [searchOpen, setSearchOpen] = useState(false)
 
   return (
     <>
@@ -93,7 +95,7 @@ export function AppBar() {
             <div className="hidden lg:flex items-center gap-1.5">
               <ShareButton />
               <StoryModeToggle />
-              <button type="button"
+              <button type="button" onClick={() => setSearchOpen(true)}
                 className="inline-flex items-center justify-center"
                 style={{
                   width: "34px", height: "34px", borderRadius: "50%",
@@ -105,6 +107,7 @@ export function AppBar() {
                 }}>
                 <Search size={15} strokeWidth={1.75} />
               </button>
+              <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
             </div>
 
             {/* Avatar */}

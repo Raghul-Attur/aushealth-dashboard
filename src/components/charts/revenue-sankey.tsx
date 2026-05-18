@@ -95,23 +95,7 @@ export function RevenueSankey({ latest }: Props) {
         labelPadding={14}
         labelTextColor={{ from: "color", modifiers: [["darker", 1.2]] }}
         valueFormat={(v) => fmt.currency(v)}
-        tooltip={({ node }) => (
-          <div style={{
-            background: "var(--color-bupa-navy)",
-            color: "#fff",
-            borderRadius: "10px",
-            padding: "8px 14px",
-            fontFamily: "var(--font-sans)",
-            fontSize: "12px",
-            boxShadow: "0 8px 24px -8px rgba(0,47,108,0.5)",
-          }}>
-            <div style={{ fontWeight: 700, marginBottom: "2px" }}>{node.id}</div>
-            <div style={{ opacity: 0.75 }}>{fmt.currency(node.value)}</div>
-          </div>
-        )}
         theme={{
-          fontSize: 11,
-          fontFamily: "var(--font-sans)",
           labels: {
             text: {
               fontSize: 11,

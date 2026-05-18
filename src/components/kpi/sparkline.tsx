@@ -68,7 +68,7 @@ export function Sparkline({
 
   const areaPath = `${path} L${last[0].toFixed(1)},${(height - padY).toFixed(1)} L${padX},${(height - padY).toFixed(1)} Z`
 
-  const gradId = `spark-grad-${Math.random().toString(36).slice(2, 7)}`
+  const gradId = `spark-grad-${values[0]?.toFixed(0) ?? "0"}-${values.length}`
 
   return (
     <svg

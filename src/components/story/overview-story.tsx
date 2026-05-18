@@ -79,7 +79,7 @@ export function OverviewStory({
 
       {/* === Beat 1: The headline number === */}
       <NarrativeBeat
-        eyebrow="The result"
+       
         claim={`Net margin of ${fmt.percent(latest.netMargin ?? 0)} — within historical range, but slipping.`}
         body={
           <>
@@ -119,8 +119,8 @@ export function OverviewStory({
                 labels={labels}
                 width={320}
                 height={56}
-                expandedWidth={320}
-                expandedHeight={56}
+               
+               
                 static
               />
               <div className="flex justify-between text-micro text-text-tertiary tabular mt-1.5">
@@ -134,7 +134,7 @@ export function OverviewStory({
 
       {/* === Beat 2: Revenue rising, profit falling === */}
       <NarrativeBeat
-        eyebrow="The divergence"
+       
         claim={`Revenue ${revenueGrowth > 0 ? "up" : "down"} ${fmt.percent(Math.abs(revenueGrowth))} year-on-year, profit ${profitGrowth > 0 ? "up" : "down"} ${fmt.percent(Math.abs(profitGrowth))}.`}
         body={
           <>
@@ -179,7 +179,7 @@ export function OverviewStory({
 
       {/* === Beat 3: Claims growth === */}
       <NarrativeBeat
-        eyebrow="Where the pressure is"
+       
         claim={`Claims grew ${fmt.percent(Math.abs(claimsGrowthRate))} this quarter, outpacing premium growth.`}
         body={
           <>
@@ -216,7 +216,7 @@ export function OverviewStory({
             sparklineLabels={labels}
             subtext={`${fmt.pp((latest.lossRatio ?? 0) - recent.reduce((s, p) => s + (p.lossRatio ?? 0), 0) / recent.length)} above the 8-quarter average.`}
             inverse
-            emphasis
+           
           />
         }
         side="right"
@@ -224,7 +224,7 @@ export function OverviewStory({
 
       {/* === Beat 4: Investment income === */}
       <NarrativeBeat
-        eyebrow="The other line"
+       
         claim={`Investment income contributed ~${fmt.percent(investmentShare)} of profit — the line that magnifies volatility.`}
         body={
           <>
@@ -263,7 +263,7 @@ export function OverviewStory({
             sparklineValues={investmentSpark}
             sparklineLabels={labels}
             subtext="Q4 is historically the most volatile quarter for investment returns."
-            emphasis
+           
           />
         }
         side="left"

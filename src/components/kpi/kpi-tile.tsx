@@ -75,7 +75,7 @@ export function KpiTile({
         </div>
 
         <div style={{ ...numStyle("hero"), color: "#ffffff" }}>{displayValue}</div>
-        {delta && <Delta value={delta.value} unit={delta.unit} inverse={delta.inverse} pill dark />}
+        {delta && <Delta value={delta.value} unit={delta.unit} inverse={delta.inverse} />}
 
         {sparklineValues && sparklineValues.length >= 2 && (
           <div className="w-full">
@@ -119,7 +119,7 @@ export function KpiTile({
         </div>
 
         <div style={{ ...numStyle("standard"), color: "var(--color-bupa-navy)" }}>{displayValue}</div>
-        {delta && <Delta value={delta.value} unit={delta.unit} inverse={delta.inverse} pill />}
+        {delta && <Delta value={delta.value} unit={delta.unit} inverse={delta.inverse} />}
 
         {sparklineValues && sparklineValues.length >= 2 && (
           <div className="w-full">
@@ -162,7 +162,7 @@ export function KpiTile({
       </div>
 
       <div style={{ ...numStyle("standard"), color: "var(--color-bupa-navy)" }}>{displayValue}</div>
-      {delta && <Delta value={delta.value} unit={delta.unit} inverse={delta.inverse} pill />}
+      {delta && <Delta value={delta.value} unit={delta.unit} inverse={delta.inverse} />}
 
       {sparklineValues && sparklineValues.length >= 2 && (
         <div className="w-full">

@@ -25,10 +25,10 @@ export function RevenueChartPanel({ periods, latest }: { periods: Period[]; late
   return (
     <div className="glass" style={{ overflow: "visible" }}>
       <SectionHeader
-        eyebrow="Revenue and claims"
-        eyebrowIcon="activity"
+       
+       
         title="Revenue and claims, by quarter."
-        emphasis="and"
+       
         subtitle="Premium revenue and incurred claims across the last eight quarters. The space between is gross underwriting margin."
         right={
           <div className="flex items-center rounded-full p-0.5"

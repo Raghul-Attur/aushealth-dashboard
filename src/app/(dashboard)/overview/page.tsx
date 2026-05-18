@@ -175,9 +175,9 @@ export default async function OverviewPage({
       </div>
 
       <div className="glass" style={{ overflow: "visible" }}>
-        <SectionHeader eyebrow="Detail" eyebrowIcon="doc"
+        <SectionHeader
           title="Quarterly performance."
-          emphasis="performance"
+         
           subtitle="Industry aggregate, last eight quarters. APRA quarterly statistics."
           right={
             <button className="glass-strong inline-flex h-9 items-center gap-2 rounded-full px-4 font-sans text-[12px] font-medium"
