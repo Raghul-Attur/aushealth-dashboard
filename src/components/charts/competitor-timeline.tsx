@@ -130,7 +130,7 @@ export function CompetitorTimeline({ bupa, medibank }: Props) {
               fontFamily: "var(--font-sans)", fontSize: "12px",
               boxShadow: "0 8px 24px -6px rgba(0,47,108,0.4)",
             }}>
-              <div style={{ fontWeight: 700, marginBottom: "2px" }}>{point.serieId}</div>
+              <div style={{ fontWeight: 700, marginBottom: "2px" }}>{point.seriesId}</div>
               <div style={{ opacity: 0.75 }}>{point.data.xFormatted}: {yFormat(point.data.yFormatted)}</div>
             </div>
           )}
