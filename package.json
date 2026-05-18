@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@nivo/line": "^0.99.0",
+    "@nivo/radar": "^0.99.0",
     "@nivo/sankey": "^0.99.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",

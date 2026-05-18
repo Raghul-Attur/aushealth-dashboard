@@ -5,12 +5,14 @@ import * as Popover from "@radix-ui/react-popover"
 import { X, MessageSquare, Plus, Trash2 } from "lucide-react"
 import { useAnnotations, type AnnotationStatus } from "@/stores/annotations"
 import { motion, AnimatePresence } from "framer-motion"
+import { useEffect } from "react"
 
 const statusConfig: Record<AnnotationStatus, { label: string; bg: string; text: string; border: string }> = {
   fyi:     { label: "FYI",              bg: "rgba(0,47,108,0.06)",  text: "var(--color-bupa-navy)",  border: "rgba(0,47,108,0.14)"  },
   discuss: { label: "Needs discussion", bg: "var(--color-warning-bg)", text: "var(--color-warning)",     border: "rgba(176,122,10,0.25)" },
   action:  { label: "Action required",  bg: "var(--color-negative-bg)", text: "var(--color-negative)",   border: "rgba(192,57,43,0.25)"  },
 }
+
 
 const boardMembers = ["RS", "EM", "JT", "PK", "DK"]
 
@@ -21,7 +23,9 @@ type Props = {
 
 export function AnnotationPopover({ tileId, tileLabel }: Props) {
   const { annotations, add, remove, forTile } = useAnnotations()
-  const tileAnnotations = forTile(tileId)
+  const [mounted, setMounted] = useState(false)
+useEffect(() => setMounted(true), [])
+const tileAnnotations = mounted ? forTile(tileId) : []
 
   const [open, setOpen] = useState(false)
   const [text, setText] = useState("")

@@ -15,6 +15,7 @@ const tabs = [
   { href: "/financial",   label: "Financial",   icon: "coin" as const },
   { href: "/customer",    label: "Customer",    icon: "eye-open" as const },
   { href: "/operational", label: "Operational", icon: "activity" as const },
+  { href: "/competitor", label: "Competitor", icon: "activity" as const },
 ]
 
 export function AppBar() {

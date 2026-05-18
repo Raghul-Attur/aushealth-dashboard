@@ -54,7 +54,20 @@ OPERATIONAL:
 - Fastest growing: ${[...operational.specialties].sort((a,b) => b.yoyChange - a.yoyChange)[0]?.specialty} (+${(([...operational.specialties].sort((a,b) => b.yoyChange - a.yoyChange)[0]?.yoyChange ?? 0) * 100).toFixed(1)}% YoY)
 `
 
-  const systemPrompt = `You are an AI assistant embedded in AusHealth, an executive dashboard for Australian private health insurance industry data. Answer executive queries by surfacing the most relevant metrics in a structured bento-grid format.
+  const competitorSummary = `
+COMPETITOR DATA (Bupa vs Medibank, FY2024 — sourced from public filings):
+- Bupa Australia: revenue $8.5B, net profit $510M, net margin 6.0%, loss ratio 93.0%, members 4.5M, member growth +4.0%, benefits paid $6.3B, market share 27.8%
+- Medibank Private: revenue $8.2B, net profit $492.5M, net margin 6.0%, loss ratio 85.8%, members 4.0M, member growth +4.2%, benefits paid $5.9B, market share 26.3%
+- Industry avg (FY2024): revenue $8.35B, net profit $450M, net margin 5.4%, loss ratio 85.1%, members 3.9M, member growth +3.8%
+- Bupa leads on: total revenue, total members, market share, benefits paid to customers
+- Medibank leads on: loss ratio (85.8% vs 93.0%), member growth rate (+4.2% vs +4.0%), underwriting efficiency
+- Net margin is tied at 6.0% for both insurers
+- Sources: Medibank FY2024 ASX Appendix 4E (22 Aug 2024), Bupa APAC FY2024 Annual Results (7 Mar 2025)
+`
+
+  const systemPrompt = `You are an AI assistant embedded in AusHealth, an executive dashboard for Australian private health insurance. You have access to both industry aggregate data (from APRA) and competitor-specific data (from public filings for Bupa Australia and Medibank Private).
+
+Answer executive queries by surfacing the most relevant metrics in a structured bento-grid format. When queries mention specific companies (Bupa, Medibank), use the competitor data. For industry trends and quarterly data, use the APRA dashboard data.
 
 Respond with a JSON object containing:
 - summary: 1-2 sentence plain English answer (max 60 words)
@@ -91,7 +104,7 @@ Rules: always exactly ONE hero metric. Values must come from the provided data. 
       system: systemPrompt,
       messages: [{
         role: "user",
-        content: `Dashboard data:\n${dataSummary}\n\nExecutive query: "${query}"\n\nRespond with JSON only.`,
+        content: `Dashboard data:\n${dataSummary}\n\nCompetitor data:\n${competitorSummary}\n\nExecutive query: "${query}"\n\nRespond with JSON only.`,
       }],
     }),
   })
